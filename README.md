@@ -1,5 +1,6 @@
 ###Project Title
 - FridgeOnTheWay
+
 ###Team Members
 - chuyut7 (Yutong Chen)
 - lizeyu2 (Zeyu Li)
