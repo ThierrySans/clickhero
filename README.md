@@ -16,10 +16,13 @@
 - Member can like a recipe
 - Member can buy all ingredients of a single recipe by adding them into the shopping cart
 - Member can purchase it through paypal or credit card
+
 ###Description of additional features that will be complete by the Final version
 - The website can locate user's location by either reading the input address or using Google map auto locate
 - People can search recipes by entering ingredients they have
+
 ###Description of the technology that you will use
 - Angular JS
+
 ###Description of the technical challenges
 - Shopping cart using cookies
