@@ -7,6 +7,8 @@
 - hejiache (Jiachen He)
 
 ###Description of web application
+- recpies sharing and food supplies online shopping platform
+
 ###Description of the key features that will be completed by the Beta version
 - Display all the food supplies
 - Order food supplies into categories
