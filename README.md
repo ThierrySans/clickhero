@@ -7,7 +7,8 @@
 - hejiache (Jiachen He)
 
 ###Description of web application
-''' As Toronto has really bad weather during the winter, people are afraid of going out to the supermarket and by food,
+
+As Toronto has really bad weather during the winter, people are afraid of going out to the supermarket and by food,
 Or people like students are just too busy (lazy) to walk out and feed themselves.
 Instead of spending 20 bucks ordering a pizza which is not tasty,
 or spending much more money ordering good food.
@@ -18,7 +19,6 @@ If you have never cooked before, now you have a great chance!
 Get recipes and ingredients from our platform and you are good to go.
 If you are a good cook, don't be shame to share your cooking secret.
 Help each other and do not starve again!
-'''
 
 ###Description of the key features that will be completed by the Beta version
 - Display all the food supplies
