@@ -40,11 +40,11 @@
         canvas.setAttribute('height', '500px');
         ctx = canvas.getContext("2d");
         if (pid == "p1") {
-            other = new Player({'username':username, 'id':"p1", 'x':100, 'y':100, 'role':"run"});
-            local = new Player({'username':currUser, 'id':"p2", 'x':700, 'y':400, 'role':"catch"});
+            other = new Player({'username':username, 'id':"p1", 'x':10, 'y':10, 'role':"run"});
+            local = new Player({'username':currUser, 'id':"p2", 'x':760, 'y':460, 'role':"catch"});
         } else if (pid == "p2") {
-            local = new Player({'username':currUser, 'id':"p1", 'x':100, 'y':100, 'role':"run"});
-            other = new Player({'username':username, 'id':"p2", 'x':700, 'y':400, 'role':"catch"});
+            local = new Player({'username':currUser, 'id':"p1", 'x':10, 'y':10, 'role':"run"});
+            other = new Player({'username':username, 'id':"p2", 'x':760, 'y':460, 'role':"catch"});
         }
         drawMap();
         makePowerUp();
@@ -187,7 +187,6 @@
         ctx.fillRect(600,360,100,100);
         ctx.fillRect(780,60,100,100);
         ctx.fillRect(780,240,100,100);
-        ctx.fillRect(780,420,100,100);
     }
 
     function switchRole() {
@@ -304,56 +303,55 @@
             local.x = canvas.width - playerWidth;
             document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
         }*/
-
-        if (p1Up) {
-            var d = wallDistance("up",p1);
+        if (pUp) {
+            var d = wallDistance("up",local);
             if (d > 0) {
                 d -= 1;
-                p1.y -= d;
+                local.y -= d;
             } else {
-                if (p1.y - p1.dy > 0) {
-                    p1.y -= p1.dy;
+                if (local.y - local.dy > 0) {
+                    local.y -= local.dy;
                 } else {
-                    p1.y = 0;
+                    local.y = 0;
                 }
             }
             document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
-        } else if (p1Down) {
-            var d = wallDistance("down",p1);
+        } else if (pDown) {
+            var d = wallDistance("down",local);
             if (d > 0) {
                 d -= 1;
-                p1.y += d;
+                local.y += d;
             } else {
-                if (p1.y + p1.dy + playerWidth < canvas.height) {
-                    p1.y += p1.dy;
+                if (local.y + local.dy + playerWidth < canvas.height) {
+                    local.y += local.dy;
                 } else {
-                    p1.y = canvas.height - playerWidth;
+                    local.y = canvas.height - playerWidth;
                 }
             }
             document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
-        } else if (p1Left) {
-            var d = wallDistance("left",p1);
+        } else if (pLeft) {
+            var d = wallDistance("left",local);
             if (d > 0) {
                 d -= 1;
-                p1.x -= d;
+                local.x -= d;
             } else {
-                if (p1.x - p1.dx > 0) {
-                    p1.x -= p1.dx;
+                if (local.x - local.dx > 0) {
+                    local.x -= local.dx;
                 } else {
-                    p1.x = 0;
+                    local.x = 0;
                 }
             }
             document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
-        } else if (p1Right) {
-            var d = wallDistance("right",p1);
+        } else if (pRight) {
+            var d = wallDistance("right",local);
             if (d > 0) {
                 d -= 1;
-                p1.x += d;
+                local.x += d;
             } else {
-                if (p1.x + p1.dx + playerWidth < canvas.width) {
-                    p1.x += p1.dx;
+                if (local.x + local.dx + playerWidth < canvas.width) {
+                    local.x += local.dx;
                 } else {
-                    p1.x = canvas.width - playerWidth;
+                    local.x = canvas.width - playerWidth;
                 }
             }
             document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
