@@ -258,6 +258,7 @@
                 console.log("Local win");
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.font = "80px Arial";
+                ctx.fillStyle = "red";
                 ctx.fillText("You WIN!!!",200,100);
             } else {
                 console.log("Other win");
