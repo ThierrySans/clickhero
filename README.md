@@ -6,7 +6,7 @@
 - lizeyu2 (Zeyu Li)
 - hejiache (Jiachen He)
 
-###Description of web application
+###Description of the web application
 
 As Toronto has really bad weather during the winter, people are afraid of going out to the supermarket and by food,
 Or people like students are just too busy (lazy) to walk out and feed themselves.
