@@ -24,6 +24,7 @@ var User = function(user){
     this.saltedHash = hash.digest('base64');
     this.friends = [];
     this.picture = null;
+    this.peerId = null;
 };
 
 
@@ -202,6 +203,11 @@ app.patch('/api/deleteFriend/:id/', function (req, res, next) {
     users.update({username: req.session.user.username}, {$pull: data}, {multi: false}, function (err, n) {
         return res.json("");
     }); 
+});
+
+app.patch('/api/newId/:id/', function (req, res, next) {
+    req.session.user.peerId = req.params.id;
+    return res.json("");
 });
 
 // Delete

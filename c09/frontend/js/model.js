@@ -78,6 +78,10 @@ var model = (function(){
         doAjax("PATCH", "/api/deleteFriend/" + id + "/", {action: "deletefriend"}, true, callback);
     };
     
+    model.patchId = function (id, callback) {
+        doAjax("PATCH", "/api/newId/" + id + "/", null, true, callback);
+    };
+    
     // Delete
     
     return model;

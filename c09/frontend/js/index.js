@@ -134,8 +134,12 @@
             });
             var start = document.createElement("div");
             start.className = "start_button";
-            start.onclick = function(e) {
-                
+            start.onclick = function(v) {
+                var friendname = e.options[e.selectedIndex].text;
+                model.getFriends(friendname, function(err, friends) {
+                    if (err) return showError(err);
+                    document.dispatchEvent(new CustomEvent('onStart', {detail: friendname.peerId}));
+                });
             };
             container.append(p);
             container.append(e);
