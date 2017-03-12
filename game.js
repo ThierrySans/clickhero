@@ -10,46 +10,40 @@ var peer = new Peer({
     $('.log').append(copy + '<br>');
         }
     });
-
+    var currID;
+    var requestedPeer;
+    var currCon;
     // Show this peer's ID.
     peer.on('open', function(id){
-      model.patchId(id);
+      model.patchId(id, function(error, data){
+      });
       $('#pid').text(id);
-    });
+      currID = id;
+    }); 
     // Await connections from others
     peer.on('connection', connect);
     peer.on('error', function(err) {
       console.log(err);
-    })
+    });
     // Handle a connection object.
     function connect(c) {
       // Handle a chat connection.
-        c.on('data', function(data) {
-            console.log(data);
-            if (data == "W"){
-                document.dispatchEvent(new CustomEvent('moveUp',{
-                    detail: $('#pid').text(id)
-              }));
+      console.log("connected");
+        requestedPeer = c.peer;
+        c.on('data', function(data) {  
+        console.log(c.label); 
+            if (c.label === "init"){
+              document.dispatchEvent(new CustomEvent('gameStarted',{"detail": data}));
             }
-            /* Down arrow was pressed */
-            else if (data == "S"){
-                document.dispatchEvent(new CustomEvent('moveDown',{
-                    detail: $('#pid').text(id)
-              }));
+            else if (c.label === "initsync"){
+                document.dispatchEvent(new CustomEvent('otherSideInited',{"detail": data}));
             }
-            /* Left arrow was pressed */
-            else if (data == "A"){
-                document.dispatchEvent(new CustomEvent('moveLeft',{
-                    detail: $('#pid').text(id)
-              }));
+            else if (c.label === "move"){
+                console.log("move");
+                console.log(data);
+                document.dispatchEvent(new CustomEvent('otherPlayerMoved',{"detail": data}));
             }
-            /* Right arrow was pressed */
-            else if (data == "D"){
-                document.dispatchEvent(new CustomEvent('moveRight',{
-                    detail: $('#pid').text(id)
-              }));
-            }
-        });
+            });
           c.on('close', function() {
               alert(c.peer + ' has left the chat.');
             });
@@ -58,30 +52,79 @@ var peer = new Peer({
       function doNothing(e){
         e.preventDefault();
         e.stopPropagation();
-    }
-    document.addEventListener("onStart", function(e) {
-        var data = e.detail;
-        var requestedPeer = data;
+        }
+    $("#connect").click(function() {
+       console.log("click");
+        var requestedPeer = $("#rid").val();
+        console.log(requestedPeer);
         var c = peer.connect(requestedPeer, {
-            serialization: 'none',
+            label: 'init',
+            serialization: 'json',
             metadata: {message: 'hi i want to chat with you!'}
           });
           c.on('open', function() {
-              document.dispatchEvent(new CustomEvent('onDrawMap',{
-                detail: "hi"
-              }));
+            console.log("open");
+              c.send({"username":"Jerry", "pid":"p1"});
+          }); 
+          c.on('error', function(err) { alert(err); });
+
+    });
+    document.addEventListener("onStart", function(e) {
+        var requestedPeer = e.detail;
+        console.log(requestedPeer);
+        var c = peer.connect(requestedPeer, {
+            label: 'init',
+            serialization: 'json',
+            metadata: {message: 'hi i want to chat with you!'}
+          });
+          c.on('open', function() {
+            console.log("open");
+              c.send({"username":"Jerry", "pid":"p1"});
           }); 
           c.on('error', function(err) { alert(err); });
     });
-    document.addEventListener("onPlayerMove", function(e) {
-        var data = e.detail;
-        var peerId = $("pid").text();
-        console.log(data);
-        var conns = peer.connections[peerId]
-        var c = conns[0]
-            // For each active connection, send the message.
-        c.send(data); 
-      });            
+    // document.addEventListener("onPlayerMove", function(e) {
+    //     var data = e.detail;
+    //     var peerId = $("pid").text();
+    //     console.log(data);
+    //     var conns = peer.connections[peerId]
+    //     var c = conns[0]
+    //         // For each active connection, send the message.
+    //     c.send(data); 
+    //   });
+
+      document.addEventListener("initDone", function(e) {
+        var c = peer.connect(requestedPeer, {
+            label: 'initsync',
+            serialization: 'json',
+            metadata: {message: 'hi i want to chat with you!'}
+          });
+          c.on('open', function() {
+              c.send(e.detail);
+          }); 
+          c.on('error', function(err) { alert(err); });
+              });
+      
+      document.addEventListener("createMove", function(e) {
+        var cmove = peer.connect(requestedPeer, {
+          label: 'move',
+          serialization: 'json',
+          metadata: {message: 'hi i want to chat with you!'}
+        });
+        cmove.on('open', function() {
+             connect(cmove);
+        }); 
+        cmove.on('error', function(err) { alert(err); });
+      });
+
+      document.addEventListener("playerMoved", function(e) {
+          var conns = peer.connections[requestedPeer];
+          var c = conns[2];
+          var data = e.detail;
+            c.send(data);
+            c.on('error', function(err) { alert(err); });
+          }); 
+            
 
   // Close a connection.
   $('#close').click(function() {
