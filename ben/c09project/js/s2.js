@@ -17,6 +17,7 @@
         this.powerY;
     }*/
 
+    var canvas, ctx
     var currUser = "LeiSurrre";
     var local, other;
     //var game = new Game();
@@ -32,10 +33,10 @@
     var p2Left = false, p2Right = false, p2Up = false, p2Down = false;
 
     function init(username, pid) {
-        var canvas=document.getElementById("game_board");
+        canvas=document.getElementById("game_board");
         canvas.setAttribute('width', '800px');
         canvas.setAttribute('height', '500px');
-        var ctx = canvas.getContext("2d");
+        ctx = canvas.getContext("2d");
         if (pid == "p1") {
             other = new Player({'username':username, 'id':"p1", 'x':100, 'y':100, 'role':"run"});
             local = new Player({'username':currUser, 'id':"p2", 'x':700, 'y':400, 'role':"catch"});
@@ -48,15 +49,21 @@
             other.dy = 5;
         }
         makePowerUp();
-        document.dispatchEvent(new CustomEvent("initDone",{"p1":local, "p2":other, "powerX":powerX, "powerY":powerY}));
+        var data = {"p1":local, "p2":other, "powerX":powerX, "powerY":powerY};
+        document.dispatchEvent(new CustomEvent("initDone", {'detail':data}));
         draw();
     }
 
     function initSync(dataP1,dataP2,dataX,dataY) {
+        canvas=document.getElementById("game_board");
+        canvas.setAttribute('width', '800px');
+        canvas.setAttribute('height', '500px');
+        ctx = canvas.getContext("2d");
+
         if (dataP1.username == currUser) {
             local = dataP1;
             other = dataP2;
-        } else if {dataP2.username == currUser}{
+        } else if (dataP2.username == currUser){
             local = dataP2;
             other = dataP1;
         }
@@ -69,7 +76,7 @@
         if (dataP1.username == currUser) {
             local = dataP1;
             other = dataP2;
-        } else if {dataP2.username == currUser}{
+        } else if (dataP2.username == currUser){
             local = dataP2;
             other = dataP1;
         }
@@ -149,7 +156,8 @@
                 switchRole();
             }
             makePowerUp();
-            document.dispatchEvent(new CustomEvent("powerUpTaken", {"p1":local, "p2":other, "powerX":powerX, "powerY":powerY}));
+            var data = {"p1":local, "p2":other, "powerX":powerX, "powerY":powerY};
+            document.dispatchEvent(new CustomEvent("powerUpTaken", {'detail':data}));
         }
     }
 
@@ -179,34 +187,34 @@
         /* Up arrow was pressed */
         if (pUp && local.y - local.dy > 0) {
             local.y -= local.dy;
-            document.dispatchEvent(new CustomEvent("playerMoved",{'x':local.x,'y':local.y}));
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
         } else if (pUp && local.y - local.dy <= 0) {
             local.y = 0;
-            document.dispatchEvent(new CustomEvent("playerMoved",{'x':local.x,'y':local.y}));
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
         }
         /* Down arrow was pressed */
         else if (pDown && local.y + local.dy + playerWidth < canvas.height) {
             local.y += local.dy;
-            document.dispatchEvent(new CustomEvent("playerMoved",{'x':local.x,'y':local.y}));
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
         } else if (pDown && local.y + local.dy + playerWidth >= canvas.height) {
             local.y = canvas.height - playerWidth;
-            document.dispatchEvent(new CustomEvent("playerMoved",{'x':local.x,'y':local.y}));
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
         }
         /* Left arrow was pressed */
         else if (pLeft && local.x - local.dx > 0) {
             local.x -= local.dx;
-            document.dispatchEvent(new CustomEvent("playerMoved",{'x':local.x,'y':local.y}));
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
         } else if (pLeft && local.x - local.dx <= 0) {
             local.x = 0;
-            document.dispatchEvent(new CustomEvent("playerMoved",{'x':local.x,'y':local.y}));
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
         }
         /* Right arrow was pressed */
         else if (pRight && local.x + local.dx + playerWidth < canvas.width){
             local.x += local.dx;
-            document.dispatchEvent(new CustomEvent("playerMoved",{'x':local.x,'y':local.y}));
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
         } else if (pRight && local.x + local.dx + playerWidth >= canvas.width) {
             local.x = canvas.width - playerWidth;
-            document.dispatchEvent(new CustomEvent("playerMoved",{'x':local.x,'y':local.y}));
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
         }
     }
 
@@ -265,13 +273,16 @@
     document.addEventListener("keydown", keyDownHandler, true);
     document.addEventListener("keyup", keyUpHandler, false);
     document.addEventListener("otherPlayerMoved", function(e){
-        moveOtherPlayer(e.x, e.y);
+        var data = e.detail;
+        moveOtherPlayer(data.x, data.y);
     });
     document.addEventListener("gameStarted", function(e){
-        init(e.username, e.pid);
+        var data = e.detail;
+        init(data.username, data.pid);
     });
     document.addEventListener("otherSideInited", function(e){
-        sync(e.p1, e.p2, e.powerX, e.powerY);
+        var data = e.detail;
+        initSync(data.p1, data.p2, data.powerX, data.powerY);
     });
 
 }());
