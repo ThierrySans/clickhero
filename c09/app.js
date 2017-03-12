@@ -54,6 +54,9 @@ app.use(function (req, res, next){
 var expressValidator = require('express-validator');
 app.use(expressValidator({
     customValidators: {
+        isAlphaNumeric: function(value) {
+            return (/^[a-zA-Z0-9]+$/i.test(value));  
+        },
         isAction: function(value) {
             return (['addfriend','deletefriend'].indexOf(value) > -1);
         },
@@ -68,7 +71,7 @@ app.use(function(req, res, next){
     Object.keys(req.body).forEach(function(arg){
         switch(arg){
             case 'username':
-                req.checkBody(arg, 'invalid username').isAlpha();
+                req.checkBody(arg, 'invalid username').isAlphaNumeric();
                 break;
             case 'password':
                 break;
