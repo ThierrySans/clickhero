@@ -217,14 +217,14 @@
         while (!valid) {
             powerX = parseInt((canvas.width - itemWidth)*Math.random());
             powerY = parseInt((canvas.height - itemWidth)*Math.random());
-            if (!detectCollision(powerX, powerY, p1.x, p1.y, playerWidth, playerWidth) &&
-                !detectCollision(powerX + itemWidth, powerY, p1.x, p1.y, playerWidth, playerWidth) &&
-                !detectCollision(powerX, powerY + itemWidth, p1.x, p1.y, playerWidth, playerWidth) &&
-                !detectCollision(powerX + itemWidth, powerY + itemWidth, p1.x, p1.y, playerWidth, playerWidth) &&
-                !detectCollision(powerX, powerY, p2.x, p2.y, playerWidth, playerWidth) &&
-                !detectCollision(powerX + itemWidth, powerY, p2.x, p2.y, playerWidth, playerWidth) &&
-                !detectCollision(powerX, powerY + itemWidth, p2.x, p2.y, playerWidth, playerWidth) &&
-                !detectCollision(powerX + itemWidth, powerY + itemWidth, p2.x, p2.y, playerWidth, playerWidth) &&
+            if (!detectCollision(powerX, powerY, local.x, local.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX + itemWidth, powerY, local.x, local.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX, powerY + itemWidth, local.x, local.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX + itemWidth, powerY + itemWidth, local.x, local.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX, powerY, other.x, other.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX + itemWidth, powerY, other.x, other.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX, powerY + itemWidth, other.x, other.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX + itemWidth, powerY + itemWidth, other.x, other.y, playerWidth, playerWidth) &&
                 !detectWall(powerX, powerY, itemWidth, itemWidth)) {
                 valid = true;
             }
