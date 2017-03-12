@@ -4,6 +4,7 @@
     // player constructor
     var Player = function(data){
         this.username = data.username;
+        this.id = data.id;
         this.x = data.x;
         this.y = data.y;
         this.role = data.role;
@@ -13,11 +14,14 @@
     
     var canvas=document.getElementById("game_board");
     var ctx = canvas.getContext("2d");
-    var p1 = new Player({'username':"p1", 'x':100, 'y':100, 'role':"run"});
-    var p2 = new Player({'username':"p2", 'x':700, 'y':400, 'role':"catch"});
+    var p1 = new Player({'username':"p1", 'id':"p1", 'x':100, 'y':100, 'role':"run"});
+    var p2 = new Player({'username':"p2", 'id':"p2", 'x':700, 'y':400, 'role':"catch"});
     p2.dx = 5;
     p2.dy = 5;
     var playerWidth = 30;
+
+    var powerX, powerY;
+    var itemWidth = 10;
 
     // hit wall
     /*var ballRadius = 10;
@@ -197,13 +201,93 @@
     var p1Left = false, p1Right = false, p1Up = false, p1Down = false;
     var p2Left = false, p2Right = false, p2Up = false, p2Down = false;
 
+    function detectCollision(x1,y1,x2,y2,width,height) {
+        return (x1 > x2 && x1 < x2 + width && y1 > y2 && y1 < y2 + width);
+    }
+
     function drawPlayer(p) {
-        if (p.role == "catch") {
+        if (p.id == "p1") {
             ctx.fillStyle = color1;
         } else {
             ctx.fillStyle = color2;
         }
         ctx.fillRect(p.x, p.y, playerWidth, playerWidth);
+    }
+
+    function drawItem() {
+        ctx.fillStyle = "lime";
+        ctx.fillRect(powerX, powerY, itemWidth, itemWidth);
+    }
+
+    function switchRole() {
+        if (p1.role == "catch") {
+            p1.role = "run";
+            p1.dx = 4;
+            p1.dy = 4;
+        } else {
+            p1.role = "catch";
+            p1.dx = 5;
+            p1.dy = 5;
+        }
+
+        if (p2.role == "catch") {
+            p2.role = "run";
+            p2.dx = 4;
+            p2.dy = 4;
+        } else {
+            p2.role = "catch";
+            p2.dx = 5;
+            p2.dy = 5;
+        }
+    }
+
+    function makePowerUp() {
+        var valid = false;
+        while (!valid) {
+            powerX = parseInt((canvas.width - itemWidth)*Math.random());
+            powerY = parseInt((canvas.height - itemWidth)*Math.random());
+            if (!detectCollision(powerX, powerY, p1.x, p1.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX + itemWidth, powerY, p1.x, p1.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX, powerY + itemWidth, p1.x, p1.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX + itemWidth, powerY + itemWidth, p1.x, p1.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX, powerY, p2.x, p2.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX + itemWidth, powerY, p2.x, p2.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX, powerY + itemWidth, p2.x, p2.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX + itemWidth, powerY + itemWidth, p2.x, p2.y, playerWidth, playerWidth)) {
+                valid = true;
+            }
+        }
+    }
+
+    function detectPowerUp(p) {
+        var cover = (detectCollision(powerX, powerY, p.x, p.y, playerWidth, playerWidth) &&
+                detectCollision(powerX + itemWidth, powerY, p.x, p.y, playerWidth, playerWidth) &&
+                detectCollision(powerX, powerY + itemWidth, p.x, p.y, playerWidth, playerWidth) &&
+                detectCollision(powerX + itemWidth, powerY + itemWidth, p.x, p.y, playerWidth, playerWidth));
+        if (cover) {
+            if (p.role == "catch") {
+                p.dx ++;
+                p.dy ++;
+            } else if (p.role == "run"){
+                switchRole();
+            }
+            makePowerUp();
+        }
+    }
+
+    function detectCatch() {
+        var cover = (detectCollision(p1.x, p1.y, p2.x, p2.y, playerWidth, playerWidth) ||
+                detectCollision(p1.x + playerWidth, p1.y, p2.x, p2.y, playerWidth, playerWidth) ||
+                detectCollision(p1.x, p1.y + playerWidth, p2.x, p2.y, playerWidth, playerWidth) ||
+                detectCollision(p1.x + playerWidth, p1.y + playerWidth, p2.x, p2.y, playerWidth, playerWidth));
+        if (cover) {
+            if (p1.role == "catch") {
+                console.log("p1 win");
+            } else {
+                console.log("p2 win");
+            }
+        }
+        return cover;
     }
 
     function movePlayers() {
@@ -286,7 +370,7 @@
         }
     }
 
-        function keyDownHandler(e){
+    function keyDownHandler(e){
         /* Up arrow was pressed */
         if (e.keyCode == 38){
             p1Up = true;
@@ -325,14 +409,22 @@
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         movePlayers();
+        if (detectCatch()){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            return;
+        }
+        detectPowerUp(p1);
+        detectPowerUp(p2);
+        drawItem();
         drawPlayer(p1);
         drawPlayer(p2);
         requestAnimationFrame(draw);
     }
 
+    makePowerUp();
     draw();
 
-    document.addEventListener('keydown', keyDownHandler, true);
+    document.addEventListener("keydown", keyDownHandler, true);
     document.addEventListener("keyup", keyUpHandler, false);
     //document.addEventListener('keydown',doP2KeyDown,true);
 
