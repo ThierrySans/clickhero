@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Click Hero</title>
+    <link href="style/index.css" rel="stylesheet" type="text/css"/>
+    <link href="style/main.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+
+    <ul id="toolbar">
+        <li><a href="/">Home</a></li>
+        <li class="dropdown">
+          <a class="dropbtn">Friend</a>
+          <div class="dropdown-content">
+            <form id="submit_search">
+                <input type="text" id="search" placeholder="Search for friends..">
+                <p class="form_radio">
+                    <label><input type="radio" name="search" value="my_friends" id="search_my_friends" />My Friends</label>
+                    <label><input type="radio" name="search" value="all_players" id="search_all_players" />All Players<input type="submit"></label>
+                </p>
+            </form>
+            <div id="friends">
+                <!--<div class="players">-->
+                    <!--<div class="user_pic"></div>-->
+                    <!--<div class="player_info">-->
+                        <!--<div class="player_name">Friend 1</div>-->
+                        <!--<div class="player_status">Last Online: 2 hours ago</div>-->
+                    <!--</div>-->
+                    <!--<div class="delete_button"></div>-->
+                    <!--<div class="chat_button"></div>-->
+                <!--</div>-->
+                <!--<div class="players">-->
+                    <!--<div class="user_pic"></div>-->
+                    <!--<div class="player_info">-->
+                        <!--<div class="player_name">Player 1</div>-->
+                        <!--<div class="player_status">Online</div>-->
+                    <!--</div>-->
+                    <!--<div class="add_button"></div>-->
+                    <!--<div class="visit_button"></div>-->
+                <!--</div>-->
+            </div>
+          </div>
+        </li>
+        <li><a href="/achievement.html">Achievement</a></li>
+        <li><a href="/profile.html">Profile</a></li>
+        <li id="signout_button" class="header_button"><a href="/signout/">Sign Out</a></li>
+        <li id="username"></li>
+    </ul>
+        
+    <div class="container" id="error">
+    </div>
+    
+    <div id="game">
+    </div>
+    
+    <!--<div class="onOffLine">
+        <button id="online_game" class="game_button">Start Game</button>
+        <button id="offline_game" class="game_button">Offline</button>
+    </div>-->
+    
+    <div id="game_map">
+        <div class="back_button" id="back"></div>
+        <canvas id="game_board" width="800" height="500" style="border:5px solid #000000">
+                Sorry, your browser does not support HTML5 Canvas.
+        </canvas>
+    </div>
+    
+    <footer>
+        <a href='/credits.html'>credits</a>
+    </footer>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+    <script src="js/peer.js"></script>
+    <script src="js/model.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/game.js"></script>
+</body>

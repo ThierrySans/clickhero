@@ -1,0 +1,39 @@
+html {overflow: -moz-scrollbars-vertical;}
+
+body {
+    text-align: left;
+    margin: auto;
+}
+
+.header_button{
+    float: right;
+    margin-right: 0;
+}
+
+header{
+    display: flex;
+    margin-top:36px;
+    justify-content:flex-end;
+    color: lightblue;
+}
+
+header #title{
+    margin: 0px;
+    padding-top:4px;
+    width:100%;
+    font-size:48px;
+    text-decoration:none;
+    color: lightblue;
+}
+
+#close_button{
+    background-image: url('../media/close.png');
+    height:64px;
+    width:64px;
+}
+
+footer{
+    float: left;
+    text-align:center;
+    width: 100%;
+}
