@@ -15,8 +15,8 @@ var peer = new Peer({
     var currCon;
     // Show this peer's ID.
     peer.on('open', function(id){
-      model.patchId(id, function(error, data){
-      });
+      // model.patchId(id, function(error, data){
+      // });
       $('#pid').text(id);
       currID = id;
     }); 
@@ -42,6 +42,11 @@ var peer = new Peer({
                 console.log("move");
                 console.log(data);
                 document.dispatchEvent(new CustomEvent('otherPlayerMoved',{"detail": data}));
+            }
+            else if (c.label === "power"){
+                console.log("move");
+                console.log(data);
+                document.dispatchEvent(new CustomEvent('otherSidePowerUp',{"detail": data}));
             }
             });
           c.on('close', function() {
@@ -103,9 +108,7 @@ var peer = new Peer({
               c.send(e.detail);
           }); 
           c.on('error', function(err) { alert(err); });
-              });
-      
-      document.addEventListener("createMove", function(e) {
+
         var cmove = peer.connect(requestedPeer, {
           label: 'move',
           serialization: 'json',
@@ -115,7 +118,30 @@ var peer = new Peer({
              connect(cmove);
         }); 
         cmove.on('error', function(err) { alert(err); });
-      });
+
+        var cp = peer.connect(requestedPeer, {
+            label: 'power',
+            serialization: 'json',
+            metadata: {message: 'hi i want to chat with you!'}
+          });
+          cp.on('open', function() {
+              connect(cp)
+          }); 
+          cp.on('error', function(err) { alert(err); });
+
+          });
+      
+      // document.addEventListener("createMove", function(e) {
+      //   var cmove = peer.connect(requestedPeer, {
+      //     label: 'move',
+      //     serialization: 'json',
+      //     metadata: {message: 'hi i want to chat with you!'}
+      //   });
+      //   cmove.on('open', function() {
+      //        connect(cmove);
+      //   }); 
+      //   cmove.on('error', function(err) { alert(err); });
+      // });
 
       document.addEventListener("playerMoved", function(e) {
           var conns = peer.connections[requestedPeer];
@@ -123,7 +149,15 @@ var peer = new Peer({
           var data = e.detail;
             c.send(data);
             c.on('error', function(err) { alert(err); });
-          }); 
+          });
+
+      document.addEventListener("powerUpTaken", function(e) {
+          var conns = peer.connections[requestedPeer];
+          var c = conns[3];
+          var data = e.detail;
+            c.send(data);
+            c.on('error', function(err) { alert(err); });
+          });
             
 
   // Close a connection.
