@@ -8,17 +8,16 @@
 
 ###Description of web application
 
-As Toronto has really bad weather during the winter, people are afraid of going out to the supermarket and by food,
-Or people like students are just too busy (lazy) to walk out and feed themselves.
-Instead of spending 20 bucks ordering a pizza which is not tasty,
-or spending much more money ordering good food.
-Why don't you buy ingredients and cook for yourself?
-Here we are buliding a platform for online supermarket and delivery.
-Without steping out to the cold weather, order ingredients online!
-If you have never cooked before, now you have a great chance!
-Get recipes and ingredients from our platform and you are good to go.
-If you are a good cook, don't be shame to share your cooking secret.
-Help each other and do not starve again!
+Design a game is challenging and interesting.
+Designing a game that is sustainable and playable is even more challenging.
+We are now buliding a web game app which will have real time connection with your friends.
+It is an arcade, it is a battle, it is a race, it is stratagy planning.
+Imagining you and your friend are now in an arena. You will play the role of catcher and runner in this game.
+If you are the catcher, catch the runner to win and you will are the king of this arena.
+There are blocks in the arena, they may block your way, and you may also use them to plan your path wisely.
+There are power ups in the arena, you can take them based on your luck, but also with your strategy.
+Eat power to swich the role around and to increase your speed.
+Now You Catch Me!
 
 ###Description of the key features that will be completed by the Beta version
 - User can sign up as a player
@@ -45,11 +44,12 @@ Help each other and do not starve again!
 - Notification of all the requests
 - Can see if a friend is online or not
 - Add more power ups to increase the game flexibility and playability
+- Player can log in by connecting to facebook account
 
 ###Description of the technology that you will use
 - Angular JS (frontend)
 - Canvas (frontend)
-- Node.js (backend)
+- Node.js (backend) tim
 - Peerjs (backend)
 - MongoDB (database)
 
