@@ -4,201 +4,161 @@
     // player constructor
     var Player = function(data){
         this.username = data.username;
+        this.id = data.id;
         this.x = data.x;
         this.y = data.y;
         this.role = data.role;
-        this.dx = 4;
-        this.dy = 4;
+        this.dx = defaultSp;
+        this.dy = defaultSp;
     }
-    
-    var canvas=document.getElementById("game_board");
-    var ctx = canvas.getContext("2d");
-    var p1 = new Player({'username':"p1", 'x':100, 'y':100, 'role':"run"});
-    var p2 = new Player({'username':"p2", 'x':700, 'y':400, 'role':"catch"});
-    p2.dx = 5;
-    p2.dy = 5;
+
+    /*var Game = function(data){
+        this.powerX;
+        this.powerY;
+    }*/
+
+    var canvas, ctx
+    var currUser = "LeiSurrre";
+    var local, other;
+    //var game = new Game();
+
     var playerWidth = 30;
+    var defaultSp = 2;
 
-    // hit wall
-    /*var ballRadius = 10;
-    var x = canvas.width/2;
-    var y = canvas.height-30;
-    var dx = 0.5;
-    var dy = -0.5;
-    var dx2 = 0.8;
-    var dy2 = -0.8;
-    var x2 = 100;
-    var y2 = 100;
-    var hit = 0;
-    var hit2 = 0;
-    var color1 = "#"+((1<<24)*Math.random()|0).toString(16);
-    var color2 = "#"+((1<<24)*Math.random()|0).toString(16);
+    var powerX, powerY;
+    var itemWidth = 10;
 
-    function drawBall() {
-        ctx.beginPath();
-        ctx.arc(x, y, ballRadius, 0, Math.PI*2);
-        if (hit == 1) {
-            color1 = "#"+((1<<24)*Math.random()|0).toString(16);
-            ctx.fillStyle = color1;
-            hit = 0;
-        } else {
-            ctx.fillStyle = color1;
+    var mapColor = "#dcdcdc";
+
+    var color1 = "red";
+    var color2 = "orange";
+    var pLeft = false, pRight = false, pUp = false, pDown = false;
+
+    function init(username, pid) {
+        canvas=document.getElementById("game_board");
+        canvas.setAttribute('width', '800px');
+        canvas.setAttribute('height', '500px');
+        ctx = canvas.getContext("2d");
+        if (pid == "p1") {
+            other = new Player({'username':username, 'id':"p1", 'x':100, 'y':100, 'role':"run"});
+            local = new Player({'username':currUser, 'id':"p2", 'x':700, 'y':400, 'role':"catch"});
+        } else if (pid == "p2") {
+            local = new Player({'username':currUser, 'id':"p1", 'x':100, 'y':100, 'role':"run"});
+            other = new Player({'username':username, 'id':"p2", 'x':700, 'y':400, 'role':"catch"});
         }
-        ctx.fill();
-        ctx.closePath();
+        drawMap();
+        makePowerUp();
+        var data = {"p1":local, "p2":other, "powerX":powerX, "powerY":powerY};
+        document.dispatchEvent(new CustomEvent("initDone", {'detail':data}));
+        draw();
     }
 
-    function drawBall2() {
-        ctx.beginPath();
-        ctx.arc(x2, y2, ballRadius, 0, Math.PI*2);
-        if (hit2 == 1) {
-            color2 = "#"+((1<<24)*Math.random()|0).toString(16);
-            ctx.fillStyle = color2;
-            hit2 = 0;
-        } else {
-            ctx.fillStyle = color2;
+    function initSync(dataP1,dataP2,dataX,dataY) {
+        canvas=document.getElementById("game_board");
+        canvas.setAttribute('width', '800px');
+        canvas.setAttribute('height', '500px');
+        ctx = canvas.getContext("2d");
+
+        if (dataP1.username == currUser) {
+            local = dataP1;
+            other = dataP2;
+        } else if (dataP2.username == currUser){
+            local = dataP2;
+            other = dataP1;
         }
-        ctx.fill();
-        ctx.closePath();
+        powerX = dataX;
+        powerY = dataY;
+        draw();
+    };
+
+    function gameSync(dataP1,dataP2,dataX,dataY) {
+        if (dataP1.username == currUser) {
+            local = dataP1;
+            other = dataP2;
+        } else if (dataP2.username == currUser){
+            local = dataP2;
+            other = dataP1;
+        }
+        powerX = dataX;
+        powerY = dataY;
+    };
+
+    function fillColorBit(c) {
+        while (c.length < 6) {
+            c = "0" + c;
+        }
+        return c;
     }
 
-
-    function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawBall();
-        drawBall2();
-        
-        if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
-            dx = -dx;
-            hit = 1;
-        } else if(y + dy > canvas.height-ballRadius || y + dy < ballRadius) {
-            dy = -dy;
-            hit = 1;
-        } else if(x2 + dx2 > canvas.width-ballRadius || x2 + dx2 < ballRadius) {
-            dx2 = -dx2;
-            hit2 = 1;
-        } else if(y2 + dy2 > canvas.height-ballRadius || y2 + dy2 < ballRadius) {
-            dy2 = -dy2;
-            hit2 = 1;
-        }
-        
-        x += dx;
-        y += dy;
-        x2 +=dx2;
-        y2 += dy2;
+    function parseColor(color) {
+        var s1 = ((color.data[0]<<16)|0);
+        var s2 = ((color.data[1]<<8)|0);
+        var s3 = ((color.data[2])|0);
+        var s4 = ((s1 + s2 + s3)|0).toString(16);
+        s4 = fillColorBit(s4);
+        return "#" + s4;
     }
-
-    setInterval(draw, 10);*/
-
-    // follow cursor
-    /*var targetX = 0,
-    targetY = 0,
-    x = 10,
-    y = 10,
-    velX = 0,
-    velY = 0,
-    speed = 4;
-
-    function update(){
-        var tx = targetX - x,
-            ty = targetY - y,
-            dist = Math.sqrt(tx*tx+ty*ty),
-            rad = Math.atan2(ty,tx),
-            angle = rad/Math.PI * 180;
-
-        velX = (tx/dist)*speed;
-        velY = (ty/dist)*speed;
-        
-        if (targetX > x + velX && velX >= 0) {
-            x += velX;
-        } else if (targetX < x + velX && velX >= 0) {
-            x = targetX;
-        } else if (targetX < x + velX && velX < 0) {
-            x += velX;
-        } else if (targetX > x + velX && velX < 0) {
-            x = targetX;
-        }
-
-        if (targetY > y + velY) {
-            y += velY;
-        } else if (targetY < y + velY && velY >= 0) {
-            y = targetY;
-        } else if (targetY < y + velY && velY < 0) {
-            y += velY;
-        } else if (targetY > y + velY && velY < 0) {
-            y = targetY;
-        }
-
-        ctx.clearRect(0,0,800,500);
-        ctx.beginPath();
-        ctx.arc(x,y,20,0,Math.PI*2);
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();
-        ctx.closePath();
-
-        setTimeout(update,10);
-    }
-
-    update();
-
-    canvas.addEventListener("mousemove", function(e){
-        targetX = e.clientX - canvas.offsetLeft;
-        targetY = e.clientY - canvas.offsetTop;
-    });*/
-
-    //  pick color
-    /*var mouseX, mouseY;
-    var grd = ctx.createLinearGradient(0,0,200,0);
-    var mycolor;
-    grd.addColorStop(0,"red");
-    grd.addColorStop(1,"white");
-
-    // Fill with gradient
-    ctx.fillStyle = grd;
-    ctx.fillRect(10,10,150,80);
-
-    ctx.fillStyle = "#0095DD";
-    ctx.fillRect(90,190,150,80);
-
-    ctx.fillStyle = "#000000";
-    ctx.fillRect(100,70,150,80);
-
-    ctx.fillStyle = "#"+((1<<24)*Math.random()|0).toString(16);
-    ctx.fillRect(560,70,150,80);
-
-    ctx.fillStyle = "#"+((1<<24)*Math.random()|0).toString(16);
-    ctx.fillRect(420,300,150,80);
-
-
-    function update(){
-        console.log(mouseX, mouseY);
-        mycolor = ctx.getImageData(mouseX,mouseY,1,1);
-        console.log("color", mycolor);
-
-        ctx.clearRect(500,500,800,500);
-        ctx.beginPath();
-        ctx.arc(700,400,20,0,Math.PI*2);
-        ctx.fillStyle = mycolor;
-        ctx.fill();
-
-    }
-
-    setInterval(update, 1000);
-
-    canvas.addEventListener("mousemove", function(e){
-    mouseX = e.clientX - canvas.offsetLeft;
-    mouseY = e.clientY - canvas.offsetTop;
-    });*/
-
 
     // keyboard move ball
-    var color1 = "#"+((1<<24)*Math.random()|0).toString(16);
-    var color2 = "#"+((1<<24)*Math.random()|0).toString(16);
-    var p1Left = false, p1Right = false, p1Up = false, p1Down = false;
-    var p2Left = false, p2Right = false, p2Up = false, p2Down = false;
+    function detectCollision(x1,y1,x2,y2,width,height) {
+        return (x1 > x2 && x1 < x2 + width && y1 > y2 && y1 < y2 + width);
+    }
+
+    function detectWall(x,y,width,height) {
+        var c1 = parseColor(ctx.getImageData(x,y,1,1));
+        var c2 = parseColor(ctx.getImageData(x + width,y,1,1));
+        var c3 = parseColor(ctx.getImageData(x,y + height,1,1));
+        var c4 = parseColor(ctx.getImageData(x + width,y + height,1,1));
+        console.log(c1,c2,c3,c4);
+        console.log(c1 == mapColor || c2 == mapColor || c3 == mapColor || c4 == mapColor);
+        return (c1 == mapColor || c2 == mapColor || c3 == mapColor || c4 == mapColor);
+
+    }
+
+    function wallDistance(dir, p) {
+        var i;
+        var dy = p.dy;
+        var dx = p.dx;
+        if (dir == "up") {
+            for (i = 1; i <= dy; i++) {
+                var c1 = parseColor(ctx.getImageData(p.x,p.y - i,1,1));
+                var c2 = parseColor(ctx.getImageData(p.x + playerWidth,p.y - i,1,1));
+                console.log(c1, c2);
+                if (c1 == mapColor || c2 == mapColor) {
+                    return i;
+                }
+            }
+        } else if (dir == "down") {
+            for (i = 1; i <= dy; i++) {
+                var c1 = parseColor(ctx.getImageData(p.x,p.y + playerWidth + i,1,1));
+                var c2 = parseColor(ctx.getImageData(p.x + playerWidth,p.y + playerWidth + i,1,1));
+                if (c1 == mapColor || c2 == mapColor) {
+                    return i;
+                }
+            }
+        } else if (dir == "left") {
+            for (i = 1; i <= dx; i++) {
+                var c1 = parseColor(ctx.getImageData(p.x - i,p.y,1,1));
+                var c2 = parseColor(ctx.getImageData(p.x - i,p.y + playerWidth,1,1));
+                if (c1 == mapColor || c2 == mapColor) {
+                    return i;
+                }
+            }
+        } else if (dir == "right") {
+            for (i = 1; i <= dx; i++) {
+                var c1 = parseColor(ctx.getImageData(p.x + playerWidth + i,p.y,1,1));
+                var c2 = parseColor(ctx.getImageData(p.x + playerWidth + i,p.y + playerWidth,1,1));
+                if (c1 == mapColor || c2 == mapColor) {
+                    return i;
+                }  
+            }
+        }
+        // wall not found
+        return -1;
+    }
 
     function drawPlayer(p) {
-        if (p.role == "catch") {
+        if (p.id == "p1") {
             ctx.fillStyle = color1;
         } else {
             ctx.fillStyle = color2;
@@ -206,134 +166,271 @@
         ctx.fillRect(p.x, p.y, playerWidth, playerWidth);
     }
 
-    function movePlayers() {
-        /* Up arrow was pressed */
-        if (p1Up && p1.y - p1.dy > 0) {
-            p1.y -= p1.dy;
-        } else if (p1Up && p1.y - p1.dy <= 0) {
-            p1.y = 0;
-        }
-        /* Down arrow was pressed */
-        else if (p1Down && p1.y + p1.dy + playerWidth < canvas.height) {
-            p1.y += p1.dy;
-        } else if (p1Down && p1.y + p1.dy + playerWidth >= canvas.height) {
-            p1.y = canvas.height - playerWidth;
-        }
-        /* Left arrow was pressed */
-        else if (p1Left && p1.x - p1.dx > 0) {
-            p1.x -= p1.dx;
-        } else if (p1Left && p1.x - p1.dx <= 0) {
-            p1.x = 0;
-        }
-        /* Right arrow was pressed */
-        else if (p1Right && p1.x + p1.dx + playerWidth < canvas.width){
-            p1.x += p1.dx;
-        } else if (p1Right && p1.x + p1.dx + playerWidth >= canvas.width) {
-            p1.x = canvas.width - playerWidth;
+    function drawItem() {
+        ctx.fillStyle = "blue";
+        ctx.fillRect(powerX, powerY, itemWidth, itemWidth);
+    }
+
+    function drawMap() {
+        ctx.fillStyle = mapColor;
+        ctx.fillRect(60,60,100,100);
+        ctx.fillRect(60,240,100,100);
+        ctx.fillRect(60,420,100,100);
+        ctx.fillRect(240,0,100,100);
+        ctx.fillRect(240,180,100,100);
+        ctx.fillRect(240,360,100,100);
+        ctx.fillRect(420,60,100,100);
+        ctx.fillRect(420,240,100,100);
+        ctx.fillRect(420,420,100,100);
+        ctx.fillRect(600,0,100,100);
+        ctx.fillRect(600,180,100,100);
+        ctx.fillRect(600,360,100,100);
+        ctx.fillRect(780,60,100,100);
+        ctx.fillRect(780,240,100,100);
+        ctx.fillRect(780,420,100,100);
+    }
+
+    function switchRole() {
+        if (local.role == "catch") {
+            local.role = "run";
+            local.dx = defaultSp;
+            local.dy = defaultSp;
+        } else {
+            local.role = "catch";
+            local.dx = defaultSp;
+            local.dy = defaultSp;
         }
 
-        /* Up arrow(w) was pressed */
-        if (p2Up && p2.y - p2.dy > 0){
-            p2.y -= p2.dy;
-        } else if (p2Up && p2.y - p2.dy <= 0) {
-            p2.y = 0;
+        if (other.role == "catch") {
+            other.role = "run";
+            other.dx = defaultSp;
+            other.dy = defaultSp;
+        } else {
+            other.role = "catch";
+            other.dx = defaultSp;
+            other.dy = defaultSp;
         }
-        /* Down arrow(s) was pressed */
-        else if (p2Down && p2.y + p2.dy + playerWidth < canvas.height){
-            p2.y += p2.dy;
-        } else if (p2Down && p2.y + p2.dy + playerWidth >= canvas.height) {
-            p2.y = canvas.height - playerWidth;
+    }
+
+    function makePowerUp() {
+        var valid = false;
+        while (!valid) {
+            powerX = parseInt((canvas.width - itemWidth)*Math.random());
+            powerY = parseInt((canvas.height - itemWidth)*Math.random());
+            if (!detectCollision(powerX, powerY, p1.x, p1.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX + itemWidth, powerY, p1.x, p1.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX, powerY + itemWidth, p1.x, p1.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX + itemWidth, powerY + itemWidth, p1.x, p1.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX, powerY, p2.x, p2.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX + itemWidth, powerY, p2.x, p2.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX, powerY + itemWidth, p2.x, p2.y, playerWidth, playerWidth) &&
+                !detectCollision(powerX + itemWidth, powerY + itemWidth, p2.x, p2.y, playerWidth, playerWidth) &&
+                !detectWall(powerX, powerY, itemWidth, itemWidth)) {
+                valid = true;
+            }
         }
-        /* Left arrow(a) was pressed */
-        else if (p2Left && p2.x - p2.dx > 0){
-            p2.x -= p2.dx;
-        } else if (p2Left && p2.x - p2.dx <= 0) {
-            p2.x = 0;
+    }
+
+    function detectPowerUp(p) {
+        var cover = (detectCollision(powerX, powerY, p.x, p.y, playerWidth, playerWidth) &&
+                detectCollision(powerX + itemWidth, powerY, p.x, p.y, playerWidth, playerWidth) &&
+                detectCollision(powerX, powerY + itemWidth, p.x, p.y, playerWidth, playerWidth) &&
+                detectCollision(powerX + itemWidth, powerY + itemWidth, p.x, p.y, playerWidth, playerWidth));
+        if (cover) {
+            if (p.role == "catch") {
+                p.dx ++;
+                p.dy ++;
+            } else if (p.role == "run"){
+                switchRole();
+            }
+            makePowerUp();
+            var data = {"p1":local, "p2":other, "powerX":powerX, "powerY":powerY};
+            document.dispatchEvent(new CustomEvent("powerUpTaken", {'detail':data}));
         }
-        /* Right arrow(d) was pressed */
-        else if (p2Right && p2.x + p2.dx + playerWidth < canvas.width){
-            p2.x += p2.dx;
-        } else if (p2Right && p2.x + p2.dx + playerWidth >= canvas.width) {
-            p2.x = canvas.width - playerWidth;
+    }
+
+    function detectCatch() {
+        var cover = (detectCollision(local.x, local.y, other.x, other.y, playerWidth, playerWidth) ||
+                detectCollision(local.x + playerWidth, local.y, other.x, other.y, playerWidth, playerWidth) ||
+                detectCollision(local.x, local.y + playerWidth, other.x, other.y, playerWidth, playerWidth) ||
+                detectCollision(local.x + playerWidth, local.y + playerWidth, other.x, other.y, playerWidth, playerWidth));
+        if (cover) {
+            if (local.role == "catch") {
+                console.log("Local win");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.font = "80px Arial";
+                ctx.fillText("You WIN!!!",200,100);
+            } else {
+                console.log("Other win");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.font = "80px Arial";
+                ctx.fillStyle = "black";
+                ctx.fillText("You LOSE...",200,100);
+            }
         }
+        return cover;
+    }
+
+    function moveLocalPlayer() {
+        /*// Up arrow was pressed
+        if (pUp && local.y - local.dy > 0) {
+            local.y -= local.dy;
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
+        } else if (pUp && local.y - local.dy <= 0) {
+            local.y = 0;
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
+        }
+        // Down arrow was pressed
+        else if (pDown && local.y + local.dy + playerWidth < canvas.height) {
+            local.y += local.dy;
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
+        } else if (pDown && local.y + local.dy + playerWidth >= canvas.height) {
+            local.y = canvas.height - playerWidth;
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
+        }
+        // Left arrow was pressed
+        else if (pLeft && local.x - local.dx > 0) {
+            local.x -= local.dx;
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
+        } else if (pLeft && local.x - local.dx <= 0) {
+            local.x = 0;
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
+        }
+        // Right arrow was pressed
+        else if (pRight && local.x + local.dx + playerWidth < canvas.width){
+            local.x += local.dx;
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
+        } else if (pRight && local.x + local.dx + playerWidth >= canvas.width) {
+            local.x = canvas.width - playerWidth;
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
+        }*/
+
+        if (p1Up) {
+            var d = wallDistance("up",p1);
+            if (d > 0) {
+                d -= 1;
+                p1.y -= d;
+            } else {
+                if (p1.y - p1.dy > 0) {
+                    p1.y -= p1.dy;
+                } else {
+                    p1.y = 0;
+                }
+            }
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
+        } else if (p1Down) {
+            var d = wallDistance("down",p1);
+            if (d > 0) {
+                d -= 1;
+                p1.y += d;
+            } else {
+                if (p1.y + p1.dy + playerWidth < canvas.height) {
+                    p1.y += p1.dy;
+                } else {
+                    p1.y = canvas.height - playerWidth;
+                }
+            }
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
+        } else if (p1Left) {
+            var d = wallDistance("left",p1);
+            if (d > 0) {
+                d -= 1;
+                p1.x -= d;
+            } else {
+                if (p1.x - p1.dx > 0) {
+                    p1.x -= p1.dx;
+                } else {
+                    p1.x = 0;
+                }
+            }
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
+        } else if (p1Right) {
+            var d = wallDistance("right",p1);
+            if (d > 0) {
+                d -= 1;
+                p1.x += d;
+            } else {
+                if (p1.x + p1.dx + playerWidth < canvas.width) {
+                    p1.x += p1.dx;
+                } else {
+                    p1.x = canvas.width - playerWidth;
+                }
+            }
+            document.dispatchEvent(new CustomEvent("playerMoved",{'detail':{'x':local.x,'y':local.y}}));
+        }
+    }
+
+    function moveOtherPlayer(x,y) {
+        other.x = x;
+        other.y = y;
     }
 
     function keyUpHandler(e){
         if (e.keyCode == 38){
-            p1Up = false;
+            pUp = false;
         }
         else if (e.keyCode == 40){
-            p1Down = false;
+            pDown = false;
         }
         else if (e.keyCode == 37){
-            p1Left = false;
+            pLeft = false;
         }
         else if (e.keyCode == 39){
-            p1Right = false;
-        }
-
-        if (e.keyCode == 87){
-            p2Up = false;
-        }
-        else if (e.keyCode == 83){
-            p2Down = false;
-        }
-        else if (e.keyCode == 65){
-            p2Left = false;
-        }
-        else if (e.keyCode == 68){
-            p2Right = false;
+            pRight = false;
         }
     }
 
-        function keyDownHandler(e){
+    function keyDownHandler(e){
         /* Up arrow was pressed */
         if (e.keyCode == 38){
-            p1Up = true;
+            pUp = true;
         }
         /* Down arrow was pressed */
         else if (e.keyCode == 40){
-            p1Down = true;
+            pDown = true;
         }
         /* Left arrow was pressed */
         else if (e.keyCode == 37){
-            p1Left = true;
+            pLeft = true;
         }
         /* Right arrow was pressed */
         else if (e.keyCode == 39){
-            p1Right = true;
-        }
-
-        /* Up arrow(w) was pressed */
-        if (e.keyCode == 87){
-            p2Up = true;
-        }
-        /* Down arrow(s) was pressed */
-        else if (e.keyCode == 83){
-            p2Down = true;
-        }
-        /* Left arrow(a) was pressed */
-        else if (e.keyCode == 65){
-            p2Left = true;
-        }
-        /* Right arrow(d) was pressed */
-        else if (e.keyCode == 68){
-            p2Right = true;
+            pRight = true;
         }
     }
 
     function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        movePlayers();
-        drawPlayer(p1);
-        drawPlayer(p2);
+        drawMap();
+        moveLocalPlayer();
+        if (detectCatch()){
+            return;
+        }
+        detectPowerUp(local);
+        drawItem();
+        drawPlayer(local);
+        drawPlayer(other);
         requestAnimationFrame(draw);
     }
 
-    draw();
-
-    document.addEventListener('keydown', keyDownHandler, true);
+    document.addEventListener("keydown", keyDownHandler, true);
     document.addEventListener("keyup", keyUpHandler, false);
-    //document.addEventListener('keydown',doP2KeyDown,true);
+    document.addEventListener("otherPlayerMoved", function(e){
+        var data = e.detail;
+        moveOtherPlayer(data.x, data.y);
+    });
+    document.addEventListener("otherSidePowerUp", function(e){
+        var data = e.detail;
+        gameSync(data);
+    });
+    document.addEventListener("gameStarted", function(e){
+        var data = e.detail;
+        init(data.username, data.pid);
+    });
+    document.addEventListener("otherSideInited", function(e){
+        var data = e.detail;
+        initSync(data.p1, data.p2, data.powerX, data.powerY);
+    });
 
 }());
+

@@ -156,14 +156,16 @@ app.get('/api/users/:username/picture/', function (req, res, next) {
 });
 
 app.get('/api/friends/', function (req, res, next) {
+    console.log(users.getAllData());
     if (!req.session.user) return res.status(403).end("Forbidden");
     var selectedIds = req.session.user.friends;
     var ids = selectedIds.map(function(e){return {_id: e};});
     users.find({ $or: ids}, function(err, selectedFriends) {
         selectedFriends.forEach(function(e) {
-            var user = selectedFriends.find(function(u){return u.username === e.username;});
+            if (e.picture) {
+                e.mimetype = e.picture.mimetype;
+            }
             e.picture = "/api/users/" + e.username + "/picture/";
-            if (user.picture) e.mimetype = user.picture.mimetype
             return e;
         });
         return res.json(selectedFriends);
@@ -175,8 +177,10 @@ app.get('/api/users/:username/', function(req, res, next) {
     users.findOne({username: req.params.username}, function(err, e) {
         if (err) return res.status(404).end("Player username:" + req.params.username + " does not exists");
         var user = users.find(function(u) {return u.username === e.username;});
+        if (e.picture) {
+            e.mimetype = e.picture.mimetype;
+        }
         e.picture = "/api/users/" + e.username + "/picture";
-        if (user.picture) e.mimetype = user.picture.mimetype
         return res.json([e]);
     });
 });
@@ -210,19 +214,13 @@ app.patch('/api/deleteFriend/:id/', function (req, res, next) {
 
 app.patch('/api/newId/:id/', function (req, res, next) {
     req.session.user.peerId = req.params.id;
+    console.log(users.getAllData());
     return res.json("");
 });
 
 // Delete
 
-var fs = require('fs');
-var https = require('https');
-var privateKey = fs.readFileSync( 'server.key' );
-var certificate = fs.readFileSync( 'server.crt' );
-var config = {
-        key: privateKey,
-        cert: certificate
-};
-https.createServer(config, app).listen(3000, function () {
-    console.log('HTTPS on port 3000');
+var http = require("http");
+http.createServer(app).listen(3000, function(){
+    console.log('HTTP on port 3000');
 });

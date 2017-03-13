@@ -21,6 +21,7 @@
                     var e = document.createElement('div');
                     e.className = "players";
                     e.id = friend._id;
+                    console.log(friend);
                     e.innerHTML = `
                         <object class="user_pic" data="${friend.picture}" type="${friend.mimetype}">
                             <img src="/media/user.png"/>
@@ -38,7 +39,7 @@
                                 showChatBox();
                             });
                         };
-                        e.append(chatButton);
+                        e.appendChild(chatButton);
                         var deleteButton = document.createElement("div");
                         deleteButton.className = "delete_button";
                         deleteButton.onclick = function(e) {
@@ -47,7 +48,7 @@
                                 updatePage();
                             });
                         };
-                        e.append(deleteButton);
+                        e.appendChild(deleteButton);
                     } else {
                         var visitButton = document.createElement("div");
                         visitButton.className = "visit_button";
@@ -57,7 +58,7 @@
                                 showAchievement();
                             });
                         };
-                        e.append(visitButton);
+                        e.appendChild(visitButton);
                         var addButton = document.createElement("div");
                         addButton.className = "add_button";
                         addButton.onclick = function(e) {
@@ -66,9 +67,9 @@
                                 updatePage();
                             });
                         };
-                        e.append(addButton);
+                        e.appendChild(addButton);
                     }
-                    container.prepend(e);
+                    container.appendChild(e);
                 });
             });
         });
@@ -130,7 +131,7 @@
                 var u = document.createElement("option");
                 u.value = friend.username;
                 u.innerHTML = friend.username;
-                e.append(u);
+                e.appendChild(u);
             });
             var start = document.createElement("div");
             start.className = "start_button";
@@ -141,9 +142,9 @@
                     document.dispatchEvent(new CustomEvent('onStart', {detail: friendname.peerId}));
                 });
             };
-            container.append(p);
-            container.append(e);
-            container.append(start);
+            container.appendChild(p);
+            container.appendChild(e);
+            container.appendChild(start);
         });
     };
     

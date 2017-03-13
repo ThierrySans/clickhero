@@ -16,6 +16,7 @@
             model.signIn(data,function(err,user){
                 if (err) return showError(err);
                 e.target.reset();
+                console.log("................");
                 window.location = '/';
             });
         }
