@@ -72,10 +72,10 @@
     };
 
     function gameSync(dataP1,dataP2,dataX,dataY) {
-        if (dataP1.username == currUser) {
+        if (dataP1.username == local.username) {
             local = dataP1;
             other = dataP2;
-        } else if (dataP2.username == currUser){
+        } else if (dataP2.username == local.username){
             local = dataP2;
             other = dataP1;
         }
@@ -420,7 +420,7 @@
     });
     document.addEventListener("otherSidePowerUp", function(e){
         var data = e.detail;
-        gameSync(data);
+        gameSync(data.p1, data.p2, data.powerX, data.powerY);
     });
     document.addEventListener("gameStarted", function(e){
         var data = e.detail;
