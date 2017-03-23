@@ -1,5 +1,5 @@
 ###Project Title
-- FridgeOnTheWay
+- NowYouCatchMe!
 
 ###Team Members
 - chuyut7 (Yutong Chen)
@@ -8,47 +8,52 @@
 
 ###Description of web application
 
-As Toronto has really bad weather during the winter, people are afraid of going out to the supermarket and by food,
-Or people like students are just too busy (lazy) to walk out and feed themselves.
-Instead of spending 20 bucks ordering a pizza which is not tasty,
-or spending much more money ordering good food.
-Why don't you buy ingredients and cook for yourself?
-Here we are buliding a platform for online supermarket and delivery.
-Without steping out to the cold weather, order ingredients online!
-If you have never cooked before, now you have a great chance!
-Get recipes and ingredients from our platform and you are good to go.
-If you are a good cook, don't be shame to share your cooking secret.
-Help each other and do not starve again!
+Design a game is challenging and interesting.
+Designing a game that is sustainable and playable is even more challenging.
+We are now buliding a web game app which will have real time connection with your friends.
+It is an arcade, it is a battle, it is a race, it is stratagy planning.
+Imagining you and your friend are now in an arena. You will play the role of catcher and runner in this game.
+If you are the catcher, catch the runner to win and you will are the king of this arena.
+There are blocks in the arena, they may block your way, and you may also use them to plan your path wisely.
+There are power ups in the arena, you can take them based on your luck, but also with your strategy.
+Eat power to swich the role around and to increase your speed.
+Now You Catch Me!
 
 ###Description of the key features that will be completed by the Beta version
-- Display all the food supplies
-- Order food supplies into categories
-- People can sign up as a member
-- Member can buy food supplies by adding them into the shopping cart
-- Member can upload and share recipes
-- Member can choose and add ingredients to their recipes
-- Member can tag their recpies with different categories (counrty, cooking method, flavor, etc.)
-- People can view all the recipes
-- Member can fliter recipes by tags
-- Member can like a recipe
-- Member can add all ingredients of a recipe into the shopping cart by adding the recipe
-- Member can enter their location by entering their address
-- Member can purchase orders through paypal or credit card
+- User can sign up as a player
+- A player can sign in to play
+- A player can sign out
+- A player can search players by entering full username
+- A player can add friends by pressing the add button of search results
+- A player can search a specific friends by filltering all friends by name
+- A player can update profile picture
+- A player can invite a firend to play by selecting from friend list
+- A player can press the start button to play
+- After pressing button, a game map will show up on both player's screen, at this time the
+  player who press the start button will be the runner, the other player will be the catcher
+- A player can press the arrow keys to control one of the blocks
+- A catcher can eat power point to speed up
+- When a runner eat the power point, it turns into a catcher
+- When a catcher catches the runner, it wins
+- A player can press the back button and start a new game
 
 ###Description of additional features that will be complete by the Final version
-- The website also locate user's location by using Google map location
-- The website will rank the top recipes and display them
-- People can search recipes by entering ingredients they have
-- People can get related recipes from the recipes they liked
+- A player can add friend by sending a request to another player
+- A player can invite friend by sending a request to another player
+- Achievement system
+- Notification of all the requests
+- Can see if a friend is online or not
+- Add more power ups to increase the game flexibility and playability
+- Player can log in by connecting to facebook account
 
 ###Description of the technology that you will use
 - Angular JS (frontend)
-- Node.js (backend)
+- Canvas (frontend)
+- Node.js (backend) tim
+- Peerjs (backend)
+- MongoDB (database)
 
 ###Description of the technical challenges
-- Managing shopping cart using cookies
-- Search engine for the recipe searching
-- Auto map location
-- Network security is a special concern, as the application relates to payment and location
-- Related recipes from food supplies and recipes liked
-
+- Use canvas to generate maps
+- Use Peerjs to connect two browsers and communicate in real time
+- Use MongoDB to manage the user information
