@@ -278,14 +278,14 @@
             newX = parseInt((canvas.width - itemWidth)*Math.random());
             newY = parseInt((canvas.height - itemWidth)*Math.random());
             if ((newX > 1 && newY > 1 && newX < canvas.width - itemWidth - 1 && newY < canvas.height - itemWidth - 1) &&
-                !detectCollision(newX, newY, p1.x, p1.y, playerWidth, playerWidth) &&
-                !detectCollision(newX + itemWidth, newY, p1.x, p1.y, playerWidth, playerWidth) &&
-                !detectCollision(newX, newY + itemWidth, p1.x, p1.y, playerWidth, playerWidth) &&
-                !detectCollision(newX + itemWidth, newY + itemWidth, p1.x, p1.y, playerWidth, playerWidth) &&
-                !detectCollision(newX, newY, p2.x, p2.y, playerWidth, playerWidth) &&
-                !detectCollision(newX + itemWidth, newY, p2.x, p2.y, playerWidth, playerWidth) &&
-                !detectCollision(newX, newY + itemWidth, p2.x, p2.y, playerWidth, playerWidth) &&
-                !detectCollision(newX + itemWidth, newY + itemWidth, p2.x, p2.y, playerWidth, playerWidth) &&
+                !detectCollision(newX, newY, local.x, local.y, playerWidth, playerWidth) &&
+                !detectCollision(newX + itemWidth, newY, local.x, local.y, playerWidth, playerWidth) &&
+                !detectCollision(newX, newY + itemWidth, local.x, local.y, playerWidth, playerWidth) &&
+                !detectCollision(newX + itemWidth, newY + itemWidth, local.x, local.y, playerWidth, playerWidth) &&
+                !detectCollision(newX, newY, other.x, other.y, playerWidth, playerWidth) &&
+                !detectCollision(newX + itemWidth, newY, other.x, other.y, playerWidth, playerWidth) &&
+                !detectCollision(newX, newY + itemWidth, other.x, other.y, playerWidth, playerWidth) &&
+                !detectCollision(newX + itemWidth, newY + itemWidth, other.x, other.y, playerWidth, playerWidth) &&
                 !detectWall(newX - 2, newY - 2, itemWidth + 2, itemWidth + 2)) {
                 valid = true;
             }
@@ -407,13 +407,11 @@
         if (cover) {
             if (local.role == "catch") {
                 console.log("you win");
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.font = "80px Arial";
                 ctx.fillStyle = "red";
                 ctx.fillText("You WIN!!!",200,100);
             } else {
                 console.log("Other win");
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.font = "80px Arial";
                 ctx.fillStyle = "black";
                 ctx.fillText("You LOSE...",200,100);
@@ -444,19 +442,16 @@
     function comparePoints() {
         if (local.point > other.point) {
             console.log("you win");
-            //ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.font = "80px Arial";
             ctx.fillStyle = "black";
             ctx.fillText("You WIN!!!",200,100);
         } else if (other.point > local.point) {
             console.log("other win");
-            //ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.font = "80px Arial";
             ctx.fillStyle = "black";
             ctx.fillText("You LOSE...",200,100);
         } else {
             console.log("draw");
-            //ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.font = "80px Arial";
             ctx.fillStyle = "black";
             ctx.fillText("DRAW...",200,100);
