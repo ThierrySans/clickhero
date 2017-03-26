@@ -56,6 +56,8 @@
             var xy = makeValidPosition();
             game.powerX = xy[0];
             game.powerY = xy[1];
+            document.getElementById('gamemode').innerHTML = "CATCH & RUN";
+            document.getElementById('countdown').innerHTML = "UNLIMITED";
             gameOne();
         } else if (game.mode == 2) {
             model.getActiveUsername(function (err, currUser) {
@@ -75,6 +77,8 @@
             local.dy = 2*defaultSp;
             other.dx = 2*defaultSp;
             other.dx = 2*defaultSp;
+            document.getElementById('gamemode').innerHTML = "COLLECT POINTS";
+            document.getElementById('countdown').innerHTML = "60";
             gameTwo();
             countdown();
         } else if (game.mode == 3) {
@@ -93,6 +97,8 @@
             local.dy = 2*defaultSp;
             other.dx = 2*defaultSp;
             other.dx = 2*defaultSp;
+            document.getElementById('gamemode').innerHTML = "DODGE BALL";
+            document.getElementById('countdown').innerHTML = "60";
             gameThree();
             createMonster();
             moveMonsters();
@@ -135,12 +141,14 @@
     };
 
     function gameSync(dataP1, dataP2, dataGame) {
-        if (dataP1.username == local.username) {
-            local = dataP1;
-            other = dataP2;
-        } else if (dataP2.username == local.username){
-            local = dataP2;
-            other = dataP1;
+        if(dataP1 && dataP2) {
+            if (dataP1.username == local.username) {
+                local = dataP1;
+                other = dataP2;
+            } else if (dataP2.username == local.username){
+                local = dataP2;
+                other = dataP1;
+            }
         }
         game = dataGame;
     };
@@ -433,7 +441,7 @@
             var xy = makeValidPosition();
             game.powerX = xy[0];
             game.powerY = xy[1];
-            var data = {"p1":local, "p2":other, "game":game};
+            var data = {"game":game};
             document.dispatchEvent(new CustomEvent("gameChanged", {'detail':data}));
 
         }
@@ -480,7 +488,7 @@
         monster.x = xy[0];
         monster.y = xy[1];
         game.monsters.push(monster);
-        var data = {"p1":local, "p2":other, "game": game};
+        var data = {"game": game};
         document.dispatchEvent(new CustomEvent('gameChanged', {'detail':data}));
         setTimeout(createMonster, 10000);
     }
@@ -533,7 +541,7 @@
                 }
             }
         });
-        var data = {"p1":local, "p2":other, "game": game};
+        var data = {"game": game};
         document.dispatchEvent(new CustomEvent('gameChanged', {'detail':data}));
         requestAnimationFrame(moveMonsters);
     }
