@@ -31,6 +31,7 @@ var User = function(user){
     this.friends = [];
     this.picture = null;
     this.peerId = null;
+    this.status = "Offline";
 };
 
 
@@ -69,6 +70,9 @@ app.get('/profile.html', function (req, res, next) {
 });
 
 app.get('/signout/', function (req, res, next) {
+    users.update({username: req.session.user.username}, {$set: {status: "Offline"}}, {multi:false}, function (err, n) {
+        if (err) return res.status(404).end("User username:" + req.session.user.username + " does not exists");
+    });
     req.session.destroy(function(err) {
         if (err) return res.status(500).end(err);
         return res.redirect('/signin.html');
@@ -80,6 +84,9 @@ app.use(express.static('frontend'));
 // signout, signin
 
 app.get('/api/signout/', function (req, res, next) {
+    users.update({username: req.session.user.username}, {$set: {status: "Offline"}}, {multi:false}, function (err, n) {
+        if (err) return res.status(404).end("User username:" + req.session.user.username + " does not exists");
+    });
     req.session.destroy(function(err) {
         if (err) return res.status(500).end(err);
         return res.end();
@@ -87,6 +94,10 @@ app.get('/api/signout/', function (req, res, next) {
 });
 
 app.post('/api/signin/', function (req, res, next) {
+    if (!req.body.username || ! req.body.password) return res.status(400).send("Bad Request");
+    users.update({username: req.body.username}, {$set: {status: "Online"}}, {multi:false}, function (err, n) {
+        if (err) return res.status(404).end("User username:" + req.session.user.username + " does not exists");
+    }); 
     if (!req.body.username || ! req.body.password) return res.status(400).send("Bad Request");
     users.findOne({username: req.body.username}, function(err, user){
         if (err) return res.status(500).end(err);
