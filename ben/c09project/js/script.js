@@ -141,7 +141,10 @@
             ctx.fillRect(780,420,100,100);
         } else if (map < 4) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillRect(100,100,600,300);
+            ctx.fillRect(100,100,600,20);
+            ctx.fillRect(100,200,600,20);
+            ctx.fillRect(100,300,600,20);
+            ctx.fillRect(100,400,600,20);
         } else {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
@@ -275,6 +278,7 @@
     }
 
     function keyUpHandler(e){
+        e.preventDefault();
         if (e.keyCode == 38){
             p1Up = false;
         }
@@ -303,6 +307,7 @@
     }
 
     function keyDownHandler(e){
+        e.preventDefault();
         /* Up arrow was pressed */
         if (e.keyCode == 38){
             p1Up = true;
@@ -376,12 +381,12 @@
         if (cover) {
             if (p1.role == "catch") {
                 console.log("p1 win");
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                //ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.font = "80px Arial";
                 ctx.fillText("P1 WIN!!!",200,100);
             } else {
                 console.log("p2 win");
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                //ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.font = "80px Arial";
                 ctx.fillStyle = "black";
                 ctx.fillText("P2 WIN!!!",200,100);
@@ -423,7 +428,6 @@
                 detectCollision(powerX + itemWidth, powerY + itemWidth, p.x, p.y, playerWidth, playerWidth));
         if (cover) {
             p.point += 1;
-            console.log(p);
             var xy = makeValidPosition();
             powerX = xy[0];
             powerY = xy[1];
@@ -433,19 +437,19 @@
     function comparePoints() {
         if (p1.point > p2.point) {
             console.log("p1 win");
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            //ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.font = "80px Arial";
             ctx.fillStyle = "black";
             ctx.fillText("P1 WIN!!!",200,100);
         } else if (p2.point > p1.point) {
             console.log("p2 win");
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            //ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.font = "80px Arial";
             ctx.fillStyle = "black";
             ctx.fillText("P2 WIN!!!",200,100);
         } else {
             console.log("draw");
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            //ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.font = "80px Arial";
             ctx.fillStyle = "black";
             ctx.fillText("DRAW...",200,100);
@@ -457,28 +461,112 @@
     //--------------------------------------------------
 
     function createMonster() {
-        if (game.time < 0) {
+        if (game.time < 0 || game.mode != 3) {
             return;
         }
         var monster = {};
         monster.dx = parseInt(5*Math.random() + 1);
+        if (2*Math.random() > 1) {
+            monster.dx = (-1)*monster.dx;
+        }
         monster.dy = parseInt(5*Math.random() + 1);
+        if (2*Math.random() > 1) {
+            monster.dy = (-1)*monster.dy;
+        }
         monster.mode = parseInt(2*Math.random() + 1);
+        var xy = makeValidPosition();
+        monster.x = xy[0];
+        monster.y = xy[1];
         game.monsters.push(monster);
         setTimeout(createMonster, 10000);
     }
+
+    function moveMonsters() {
+        game.monsters.forEach(function (monster) {
+            if (monster.mode == 1) {
+                if (monster.x + monster.dx + itemWidth > canvas.width) {
+                    monster.x = canvas.width - itemWidth;
+                    monster.dx = (-1)*monster.dx;
+                } else if (monster.x + monster.dx < 0) {
+                    monster.x = 0;
+                    monster.dx = (-1)*monster.dx;
+                } else {
+                    monster.x += monster.dx;
+                }
+                if (monster.y + monster.dy + itemWidth > canvas.height) {
+                    monster.y = canvas.height - itemWidth;
+                    monster.dy = (-1)*monster.dy;
+                } else if (monster.y + monster.dy < 0) {
+                    monster.y = 0;
+                    monster.dy = (-1)*monster.dy;
+                } else {
+                    monster.y += monster.dy;
+                }
+            } else if (monster.mode == 2) {
+                if (2*Math.random() > 1) {
+                    if (monster.y + 2*monster.dy + itemWidth > canvas.height) {
+                        monster.y = canvas.height - itemWidth;
+                        monster.dy = (-1)*monster.dy;
+                    } else if (monster.y + 2*monster.dy < 0) {
+                        monster.y = 0;
+                        monster.dy = (-1)*monster.dy;
+                    } else {
+                        monster.y += 2*monster.dy;
+                    }
+                } else {
+                    if (monster.x + 2*monster.dx + itemWidth > canvas.width) {
+                        monster.x = canvas.width - itemWidth;
+                        monster.dx = (-1)*monster.dx;
+                    } else if (monster.x + 2*monster.dx < 0) {
+                        monster.x = 0;
+                        monster.dx = (-1)*monster.dx;
+                    } else {
+                        monster.x += 2*monster.dx;
+                    }
+                }
+            }
+        });
+    }
+
+    function drawMonsters() {
+        game.monsters.forEach(function (monster) {
+            ctx.fillStyle = "#500050";
+            ctx.fillRect(monster.x, monster.y, itemWidth, itemWidth);
+        });
+    }
+
+
+    function detectMeetMonsters(p) {
+        var res = false;
+        game.monsters.forEach(function (monster) {
+            //console.log(detectCollision(monster.x, monster.y, p.x, p.y, playerWidth, playerWidth),
+            //    detectCollision(monster.x + itemWidth, monster.y, p.x, p.y, playerWidth, playerWidth),
+            //    detectCollision(monster.x, monster.y + itemWidth, p.x, p.y, playerWidth, playerWidth),
+            //    detectCollision(monster.x + itemWidth, monster.y + itemWidth, p.x, p.y, playerWidth, playerWidth));
+            var cover = (detectCollision(monster.x, monster.y, p.x, p.y, playerWidth, playerWidth) ||
+                    detectCollision(monster.x + itemWidth, monster.y, p.x, p.y, playerWidth, playerWidth) ||
+                    detectCollision(monster.x, monster.y + itemWidth, p.x, p.y, playerWidth, playerWidth) ||
+                    detectCollision(monster.x + itemWidth, monster.y + itemWidth, p.x, p.y, playerWidth, playerWidth));
+            if (cover) {
+                res = true;
+            }
+        });
+        return res;
+    }
+
+
 
     //--------------------------------------------------
     //-------------------- game init -------------------
     //--------------------------------------------------
 
     function gameOne() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawMap(game.map);
-        movePlayers();
         if (detectCatch()){
             return;
         }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawMap(game.map);
+        movePlayers();
         detectPowerUp(p1);
         detectPowerUp(p2);
         drawItem();
@@ -488,11 +576,11 @@
     }
 
     function gameTwo() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
         if (game.time < 0) {
             comparePoints();
             return;
         }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawMap(game.map);
         movePlayers();
         detectPoint(p1);
@@ -505,17 +593,37 @@
     }
 
     function gameThree() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
         if (game.time < 0) {
             console.log("draw");
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            //ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.font = "80px Arial";
             ctx.fillStyle = "black";
             ctx.fillText("DRAW...",200,100);
             return;
         }
+        if (detectMeetMonsters(p2)) {
+            console.log("p1 win");
+            //ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "80px Arial";
+            ctx.fillStyle = "black";
+            ctx.fillText("P1 WIN!!!",200,100);
+            return;
+        } else if (detectMeetMonsters(p1)) {
+            console.log("p2 win");
+            //ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "80px Arial";
+            ctx.fillStyle = "black";
+            ctx.fillText("P2 WIN!!!",200,100);
+            return;
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawMap(game.map);
         movePlayers();
+        moveMonsters();
+        drawPlayer(p1);
+        drawPlayer(p2);
+        drawMonsters();
+        requestAnimationFrame(gameThree);
     }
 
     function init(mode) {
@@ -533,14 +641,15 @@
             powerY = xy[1];
             gameOne();
         } else if (game.mode == 2) {
-            game.time = 10;
+            game.time = 60;
             var xy = makeValidPosition();
             powerX = xy[0];
             powerY = xy[1];
             gameTwo();
             countdown();
         } else if (game.mode == 3) {
-            game.time = 60
+            game.time = 60;
+            game.monsters = [];
             gameThree();
             createMonster();
             countdown();
