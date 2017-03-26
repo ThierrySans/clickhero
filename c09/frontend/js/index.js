@@ -109,9 +109,9 @@
                     
                 });
             };
+            container.appendChild(start);
             container.appendChild(p);
             container.appendChild(e);
-            container.appendChild(start);
         });
     };
     

@@ -3,7 +3,7 @@ ul {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #333;
+    background-color: #46A7FB;
 }
 
 li {
@@ -14,7 +14,7 @@ li a {
     display: block;
     color: white;
     text-align: center;
-    padding: 14px 16px;
+    padding: 16px 20px;
     text-decoration: none;
 }
 
@@ -66,6 +66,7 @@ li.dropdown {
     display: flex;
     flex-direction: column;
     max-width: 800px;
+    background-color: #FFFFFF;
 }
 
 .complex_form .form_title{
@@ -216,6 +217,20 @@ li.dropdown {
     text-align: center;
     align-items: center;
     margin: auto;
+    cursor: pointer;
+}
+
+.start_button:active {
+    height: 256px;
+    width: 256px;
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(../media/start.png);
+    text-align: center;
+    align-items: center;
+    margin: auto;
+    transform: scale(0.9);
 }
 
 .onOffLine {
@@ -265,4 +280,14 @@ li.dropdown {
 
 #game_board {
     margin-left: 50px;
+}
+
+#main{
+    max-width: 1200px;
+    width: 80%;
+    height: 100%;
+    min-height:900px;
+    margin: auto;
+    background-color: #FFFFFF;
+    border-radius: 0px 0px 20px 20px;
 }

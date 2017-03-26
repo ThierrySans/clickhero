@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>Click Hero</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link href="style/index.css" rel="stylesheet" type="text/css"/>
     <link href="style/main.css" rel="stylesheet" type="text/css"/>
 </head>
@@ -47,30 +48,36 @@
         <li id="signout_button" class="header_button"><a href="/signout/">Sign Out</a></li>
         <li id="username"></li>
     </ul>
+    <div id="main">  
+        <div class="container" id="error">
+        </div>
         
-    <div class="container" id="error">
-    </div>
-    
-    <div id="game">
-    </div>
-    
-    <!--<div class="onOffLine">
-        <button id="online_game" class="game_button">Start Game</button>
-        <button id="offline_game" class="game_button">Offline</button>
-    </div>-->
-    
-    <div id="game_map">
-        <div class="back_button" id="back"></div>
-        <canvas id="game_board" width="800" height="500" style="border:5px solid #000000">
-                Sorry, your browser does not support HTML5 Canvas.
-        </canvas>
-    </div>
-    
-    <footer>
-        <a href='/credits.html'>credits</a>
-    </footer>
-
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+        <!--<div class="onOffLine">
+            <button id="online_game" class="game_button">Start Game</button>
+            <button id="offline_game" class="game_button">Offline</button>
+        </div>-->
+        
+        <div id="game_map">
+            <div class="back_button" id="back"></div>
+            <canvas id="game_board" width="800" height="500" style="border:5px solid #000000">
+                    Sorry, your browser does not support HTML5 Canvas.
+            </canvas>
+        </div>
+        <div id="game">
+        </div>
+        <div class="container">
+            <div class="alert alert-success">
+                  <strong>Success!</strong> Indicates a successful or positive action.
+            </div>
+             <div class="alert alert-warning"" id="error">
+             </div>
+        </div>
+        <footer>
+            <a href='/credits.html'>credits</a>
+        </footer>
+    </div>  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="js/peer.js"></script>
     <script src="js/model.js"></script>
     <script src="js/index.js"></script>

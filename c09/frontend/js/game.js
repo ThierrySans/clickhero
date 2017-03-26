@@ -1,15 +1,8 @@
 var peer = new Peer({
-  // Set API key for cloud server (you don't need this if you're running your
-  // own.
-  key: 'x7fwx2kavpy6tj4i',
-  // Set highest debug level (log everything!).
-  debug: 3,
-  // Set a logging function:
-  logFunction: function() {
-    var copy = Array.prototype.slice.call(arguments).join(' ');
-    $('.log').append(copy + '<br>');
-        }
-    });
+  host: "localhost",
+  port: 9000,
+  path: '/peerjs'
+})
     var currID;
     var requestedPeer;
     var currCon;
@@ -32,6 +25,7 @@ var peer = new Peer({
         requestedPeer = c.peer;
         c.on('data', function(data) {  
         console.log(c.label); 
+        $("#error").text('');
             if (c.label === "init"){
               document.dispatchEvent(new CustomEvent('gameStarted',{"detail": data}));
             }
@@ -50,7 +44,7 @@ var peer = new Peer({
             }
             });
           c.on('close', function() {
-              alert(c.peer + ' has left the chat.');
+              $("#error").text(c.peer + ' has disconnected from the game.');
             });
     }
     $(document).ready(function() {
@@ -58,9 +52,9 @@ var peer = new Peer({
         e.preventDefault();
         e.stopPropagation();
         }
-    $("#connect").click(function() {
-       console.log("click");
-        var requestedPeer = $("#rid").val();
+
+    document.addEventListener("onStart", function(e) {
+        var requestedPeer = e.detail.friendId;
         console.log(requestedPeer);
         var c = peer.connect(requestedPeer, {
             label: 'init',
@@ -69,16 +63,16 @@ var peer = new Peer({
           });
           c.on('open', function() {
             console.log("open");
-              c.send({"username":"Jerry", "pid":"p1"});
+            c.send({"username":e.detail.myname, "pid":"p1"});
           }); 
           c.on('error', function(err) { alert(err); });
-
     });
-    document.addEventListener("onStart", function(e) {
+
+    document.addEventListener("onInvite", function(e) {
         var requestedPeer = e.detail.friendId;
         console.log(requestedPeer);
         var c = peer.connect(requestedPeer, {
-            label: 'init',
+            label: 'invite',
             serialization: 'json',
             metadata: {message: 'hi i want to chat with you!'}
           });

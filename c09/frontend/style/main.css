@@ -3,6 +3,9 @@ html {overflow: -moz-scrollbars-vertical;}
 body {
     text-align: left;
     margin: auto;
+    background-image: url("../media/maze.jpg");
+    background-size: 100%;
+    background-repeat: no-repeat; 
 }
 
 .header_button{
