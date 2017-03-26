@@ -17,7 +17,8 @@ var peer = new Peer({
     // Await connections from others
     peer.on('connection', connect);
     peer.on('error', function(err) {
-      console.log(err);
+      $("#error").css("display","block");
+      $("#error").text("Cannot connect to the other player.");
     });
     // Handle a connection object.
     function connect(c) {
