@@ -41,9 +41,9 @@ var peer = new Peer({
                 console.log(data);
                 document.dispatchEvent(new CustomEvent('otherPlayerMoved',{"detail": data}));
             }
-            else if (data.label === "power"){
-                console.log("move");
-                document.dispatchEvent(new CustomEvent('otherSidePowerUp',{"detail": data}));
+            else if (data.label === "change"){
+                console.log("change");
+                document.dispatchEvent(new CustomEvent('otherSideChangedGame',{"detail": data}));
             }
             else if (data.label === "invite"){
                 console.log("invite");
@@ -131,7 +131,7 @@ var peer = new Peer({
           }
           console.log(currCon);
           var c = conns[currCon];
-            c.send({"username":e.detail.friendname, "pid":"p1", "label":"init"});
+            c.send({"username":e.detail.friendname, "mode":e.detail.mode, "label":"init"});
           c.on('error', function(err) { $("#error").text(err); });
     });
 
@@ -183,11 +183,11 @@ var peer = new Peer({
             c.on('error', function(err) { $("#error").text(err); });
           });
     
-      document.addEventListener("powerUpTaken", function(e) {
+      document.addEventListener("gameChanged", function(e) {
           var conns = peer.connections[requestedPeer];
           var c = conns[currCon];
           var data = e.detail;
-            data.label = "power";
+            data.label = "change";
             c.send(data);
             c.on('error', function(err) { $("#error").text(err); });
           });
