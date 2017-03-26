@@ -41,6 +41,7 @@
         game = {};
         game.map = parseInt(10*Math.random());
         game.mode = mode;
+        game.over = false;
         drawMap(game.map);
 
         if (game.mode == 1) {
@@ -227,7 +228,7 @@
     }
 
     function countdown() {
-        if (game.time < 0) {
+        if (game.time < 0 || game.over) {
             return;
         }
         //document.getElementById('countdown').innerHTML = ('0' + game.time).slice(-2);
@@ -471,7 +472,7 @@
     //--------------------------------------------------
 
     function createMonster() {
-        if (game.time < 0 || game.mode != 3) {
+        if (game.time < 1 || game.mode != 3 || game.over) {
             return;
         }
         var monster = {};
@@ -494,7 +495,7 @@
     }
 
     function moveMonsters() {
-        if (game.time < 0 || game.mode != 3) {
+        if (game.time < 1 || game.mode != 3 || game.over) {
             return;
         }
         game.monsters.forEach(function (monster) {
@@ -609,6 +610,7 @@
 
     function gameOne() {
         if (detectCatch()){
+            game.over = true;
             return;
         }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -624,6 +626,7 @@
     function gameTwo() {
         if (game.time < 0) {
             comparePoints();
+            game.over = true;
             return;
         }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -643,6 +646,7 @@
             ctx.font = "80px Arial";
             ctx.fillStyle = "black";
             ctx.fillText("DRAW...",200,100);
+            game.over = true;
             return;
         }
         if (detectMeetMonsters(local)) {
@@ -650,12 +654,14 @@
             ctx.font = "80px Arial";
             ctx.fillStyle = "black";
             ctx.fillText("You LOSE..",200,100);
+            game.over = true;
             return;
         } else if (detectMeetMonsters(other)) {
             console.log("you win");
             ctx.font = "80px Arial";
             ctx.fillStyle = "black";
             ctx.fillText("You WIN!!!",200,100);
+            game.over = true;
             return;
         }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
