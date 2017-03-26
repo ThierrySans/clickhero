@@ -1,6 +1,5 @@
 (function(model){
     "use strict";
-    
     var showError = function(message){
         var e = document.getElementById("error");
         e.innerHTML = `<span class="alert">${(message)}</span>`;
@@ -9,7 +8,6 @@
     
     var updatePage = function(search = ""){
         model.getFriends(search, function(err, friends) {
-            console.log(friends);
             if (err) return showError(err);
             model.getActiveUsername(function(err, username) {
                 if (err) return showError(err);
@@ -22,7 +20,6 @@
                     var e = document.createElement('div');
                     e.className = "players";
                     e.id = friend._id;
-                    console.log(friend);
                     e.innerHTML = `
                         <object class="user_pic" data="${friend.picture}" type="${friend.mimetype}">
                             <img src="/media/user.png"/>
@@ -105,7 +102,7 @@
                     model.getActiveUsername(function(err, user) {
                         data.myname = user;
                     })
-                    document.dispatchEvent(new CustomEvent('onStart', {detail: data}));
+                    document.dispatchEvent(new CustomEvent('onInvite', {detail: data}));
                     
                 });
             };
@@ -196,6 +193,32 @@
         document.getElementById("offline_game").style.display = "none";
         document.getElementById("game_map").style.display = "block";
     };*/
+    document.addEventListener("showInvite", function(e) {
+          var data = e.detail;
+          var username = data.friendname;
+          var invite = document.createElement("div");
+          invite.className = "alert alert-info";
+          invite.id = "invite";
+          var invite_request = document.createElement("p");
+          invite_request.innerHTML = `${username} has sent you a game invite!`
+          var accept = document.createElement("div");
+          accept.id = "accept_btn";
+          var decline = document.createElement("div");
+          decline.id = "decline_btn"
+          accept.addEventListener("click", function(e){
+              document.dispatchEvent(new CustomEvent('inviteAccept', {detail: data}));
+          });
+          decline.addEventListener("click", function(e){
+              document.dispatchEvent(new CustomEvent('inviteDecline', {detail: data}));
+              invite.style = "display:none";
+          });
+          var container = document.getElementById("messages");
+          invite.appendChild(invite_request);
+          invite.appendChild(accept);
+          invite.appendChild(decline);
+          container.appendChild(invite);
+          invite.style = "display:block";
+    });
     
     document.getElementById("back").onclick = function(e) {
         /*document.getElementById("online_game").style.display = "block";

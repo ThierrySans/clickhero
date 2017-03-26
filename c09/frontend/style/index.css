@@ -66,7 +66,6 @@ li.dropdown {
     display: flex;
     flex-direction: column;
     max-width: 800px;
-    background-color: #FFFFFF;
 }
 
 .complex_form .form_title{
@@ -287,7 +286,31 @@ li.dropdown {
     width: 80%;
     height: 100%;
     min-height:900px;
+    min-width: 900px;
     margin: auto;
     background-color: #FFFFFF;
     border-radius: 0px 0px 20px 20px;
+}
+
+.container{
+    max-width: 900px;
+    padding-top:8px;
+}
+
+#decline_btn{
+    background-image: url('../media/cancel.png');
+    height:64px;
+    width:64px;
+    transform: scale(0.9);
+    cursor: pointer;
+}
+#accept_btn{
+    background-image: url('../media/checked.png');
+    height:64px;
+    width:64px;
+    transform: scale(0.9);
+    cursor: pointer;
+}
+#invite{
+    flex-direction: row;
 }
