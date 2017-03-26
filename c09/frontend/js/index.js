@@ -26,7 +26,7 @@
                         </object>
                         <div class="player_info">
                             <div class="player_name">${friend.username}</div>
-                            <div class="player_status">Online</div>
+                            <div class="player_status">${friend.status}</div>
                         </div>`;
                     if (search === "") {
                         var chatButton = document.createElement("div");
