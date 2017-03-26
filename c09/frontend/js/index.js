@@ -26,7 +26,7 @@
                         </object>
                         <div class="player_info">
                             <div class="player_name">${friend.username}</div>
-                            <div class="player_status">${friend.status}</div>
+                            <div class="player_status">Online</div>
                         </div>`;
                     if (search === "") {
                         var chatButton = document.createElement("div");
@@ -77,6 +77,7 @@
     
     var updateFriend = function () {
         var container = document.getElementById("game");
+        var btn_container = document.getElementById("btn_container");
         container.innerHTML = "";
         var search = "";
         model.getFriends(search, function(err, friends) {
@@ -90,14 +91,35 @@
                 u.innerHTML = friend.username;
                 e.appendChild(u);
             });
-            var start = document.createElement("div");
-            start.className = "start_button";
-            start.onclick = function(v) {
+            var start_one = document.createElement("div");
+            var start_two = document.createElement("div");
+            var start_three = document.createElement("div");
+            start_one.className = "start_button_one";
+            start_one.innerHTML = `Mode one`
+            start_two.className = "start_button_two";
+            start_three.className = "start_button_three";
+            start_one.onclick = function(v) {
                 var friendname = e.options[e.selectedIndex].text;
                 model.getFriends(friendname, function(err, friends) {
                     if (err) return showError(err);
                     var data = {}
                     data.friendId = friends[0].peerId;
+                    data.friendname = friends[0].username;
+                    data.mode = 1;
+                    model.getActiveUsername(function(err, user) {
+                        data.myname = user;
+                    })
+                    document.dispatchEvent(new CustomEvent('onInvite', {detail: data}));
+                    
+                });
+            };
+            start_two.onclick = function(v) {
+                var friendname = e.options[e.selectedIndex].text;
+                model.getFriends(friendname, function(err, friends) {
+                    if (err) return showError(err);
+                    var data = {}
+                    data.friendId = friends[0].peerId;
+                    data.mode = 2;
                     data.friendname = friends[0].username;
                     model.getActiveUsername(function(err, user) {
                         data.myname = user;
@@ -106,7 +128,24 @@
                     
                 });
             };
-            container.appendChild(start);
+            start_three.onclick = function(v) {
+                var friendname = e.options[e.selectedIndex].text;
+                model.getFriends(friendname, function(err, friends) {
+                    if (err) return showError(err);
+                    var data = {}
+                    data.friendId = friends[0].peerId;
+                    data.mode = 3;
+                    data.friendname = friends[0].username;
+                    model.getActiveUsername(function(err, user) {
+                        data.myname = user;
+                    })
+                    document.dispatchEvent(new CustomEvent('onInvite', {detail: data}));
+                    
+                });
+            };
+            btn_container.appendChild(start_one);
+            btn_container.appendChild(start_two);
+            btn_container.appendChild(start_three);
             container.appendChild(p);
             container.appendChild(e);
         });
@@ -195,7 +234,7 @@
     };*/
     document.addEventListener("showInvite", function(e) {
           var data = e.detail;
-          var username = data.friendname;
+          var username = data.myname;
           var invite = document.createElement("div");
           invite.className = "alert alert-info";
           invite.id = "invite";
