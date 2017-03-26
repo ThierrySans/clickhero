@@ -48,10 +48,11 @@
         <li id="signout_button" class="header_button"><a href="/signout/">Sign Out</a></li>
         <li id="username"></li>
     </ul>
-    <div id="main">  
-        <div class="container" id="error">
+    <div id="main"> 
+        <div class="container">
+            <div class="alert alert-danger" id="error" style="display:none">
+            </div>
         </div>
-        
         <!--<div class="onOffLine">
             <button id="online_game" class="game_button">Start Game</button>
             <button id="offline_game" class="game_button">Offline</button>
@@ -65,12 +66,10 @@
         </div>
         <div id="game">
         </div>
-        <div class="container">
+        <div class="container" id="messages">
             <div class="alert alert-success">
-                  <strong>Success!</strong> Indicates a successful or positive action.
+                  <strong>Hello!</strong> Choose a friend and click button to start the game!
             </div>
-             <div class="alert alert-warning"" id="error">
-             </div>
         </div>
         <footer>
             <a href='/credits.html'>credits</a>

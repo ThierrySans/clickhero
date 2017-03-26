@@ -55,10 +55,12 @@
         makePowerUp();
         var data = {"p1":local, "p2":other, "powerX":powerX, "powerY":powerY};
         document.dispatchEvent(new CustomEvent("initDone", {'detail':data}));
+        console.log(data);
         draw();
     }
 
     function initSync(dataP1,dataP2,dataX,dataY) {
+        console.log(dataP1, dataP2);
         document.getElementById("game_map").style.display = "block";
         document.getElementById("game").innerHTML = "";
         canvas=document.getElementById("game_board");
@@ -432,10 +434,12 @@
     });
     document.addEventListener("gameStarted", function(e){
         var data = e.detail;
+        console.log(data);  
         init(data.username, data.pid);
     });
     document.addEventListener("otherSideInited", function(e){
         var data = e.detail;
+        console.log(data);
         initSync(data.p1, data.p2, data.powerX, data.powerY);
     });
 

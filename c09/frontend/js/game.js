@@ -6,6 +6,7 @@ var peer = new Peer({
     var currID;
     var requestedPeer;
     var currCon;
+    var other_player;
     // Show this peer's ID.
     peer.on('open', function(id){
       model.patchId(id, function(error, data){
@@ -24,27 +25,46 @@ var peer = new Peer({
       console.log("connected");
         requestedPeer = c.peer;
         c.on('data', function(data) {  
-        console.log(c.label); 
+        console.log(data);
         $("#error").text('');
-            if (c.label === "init"){
+            if (data.label === "init"){
+            	console.log(data);
+              other_player = data.username;
               document.dispatchEvent(new CustomEvent('gameStarted',{"detail": data}));
             }
-            else if (c.label === "initsync"){
+            else if (data.label === "initsync"){
                 document.dispatchEvent(new CustomEvent('otherSideInited',{"detail": data}));
             }
-            else if (c.label === "move"){
+            else if (data.label === "move"){
                 console.log("move");
                 console.log(data);
                 document.dispatchEvent(new CustomEvent('otherPlayerMoved',{"detail": data}));
             }
-            else if (c.label === "power"){
+            else if (data.label === "power"){
                 console.log("move");
-                console.log(data);
                 document.dispatchEvent(new CustomEvent('otherSidePowerUp',{"detail": data}));
+            }
+            else if (data.label === "invite"){
+                console.log("invite");
+                other_player = data.myname;
+                document.dispatchEvent(new CustomEvent('showInvite',{"detail": data}));
+            }
+            else if (data.label === "decline"){
+              console.log(data);
+                other_player = data.friendname;
+                console.log("decline");
+                document.dispatchEvent(new CustomEvent('closeConnection',{"detail": data}));
             }
             });
           c.on('close', function() {
-              $("#error").text(c.peer + ' has disconnected from the game.');
+              if (c.label == "decline"){
+                  $("#error").css("display","block");
+                  $("#error").text(other_player + ' reject your request.');
+              }
+              else if (c.label === "invite"){
+                  $("#error").css("display","block");
+                  $("#error").text(other_player + ' has disconnected from the game.');
+              }
             });
     }
     $(document).ready(function() {
@@ -52,107 +72,150 @@ var peer = new Peer({
         e.preventDefault();
         e.stopPropagation();
         }
-    $("#connect").click(function() {
-       console.log("click");
-        var requestedPeer = $("#rid").val();
-        console.log(requestedPeer);
-        var c = peer.connect(requestedPeer, {
-            label: 'init',
-            serialization: 'json',
-            metadata: {message: 'hi i want to chat with you!'}
-          });
-          c.on('open', function() {
-            console.log("open");
-              c.send({"username":"Jerry", "pid":"p1"});
-          }); 
-          c.on('error', function(err) { alert(err); });
 
-    });
-    document.addEventListener("onStart", function(e) {
+    document.addEventListener("onInvite", function(e) {
         var requestedPeer = e.detail.friendId;
-        console.log(requestedPeer);
+        var data = e.detail;
+        data.inviterId = currID;
+        data.label = "invite";
         var c = peer.connect(requestedPeer, {
-            label: 'init',
+            label: 'invite',
             serialization: 'json',
             metadata: {message: 'hi i want to chat with you!'}
-          });
+        });
           c.on('open', function() {
-            console.log("open");
-            c.send({"username":e.detail.myname, "pid":"p1"});
+            connect(c);
+            document.dispatchEvent(new CustomEvent('onConnected', {"detail": data}));
           }); 
-          c.on('error', function(err) { alert(err); });
+          c.on('error', function(err) { $("#error").text(err); });
     });
-    // document.addEventListener("onPlayerMove", function(e) {
-    //     var data = e.detail;
-    //     var peerId = $("pid").text();
-    //     console.log(data);
-    //     var conns = peer.connections[peerId]
-    //     var c = conns[0]
-    //         // For each active connection, send the message.
-    //     c.send(data); 
-    //   });
+
+    document.addEventListener("onConnected", function(e) {
+          var conns = peer.connections[requestedPeer];
+          for (i = 0; i < conns.length; i++) { 
+              if (conns[i].peer === requestedPeer){
+                 currCon = i;
+              }
+          }
+          console.log(currCon);
+          var con = conns[currCon];
+          var data = e.detail;
+          data.label = "invite";
+          con.send(data);
+    });
+
+    document.addEventListener("inviteAccept", function(e) {
+        // var requestedPeer = e.detail.inviterId;
+        // var data = e.detail;
+        // console.log(requestedPeer);
+        // document.getElementById("invite").innerHTML = ``;
+        // document.getElementById("invite").style = "display:none";
+        // var c = peer.connect(requestedPeer, {
+        //     label: 'init',
+        //     serialization: 'json',
+        //     metadata: {message: 'hi i want to chat with you!'}
+        //   });
+        //   c.on('open', function() {
+        //     console.log("open");
+        //     console.log(e.detail);
+        //     c.send({"username":e.detail.friendname, "pid":"p1"});
+        //   }); 
+        //   c.on('error', function(err) { $("#error").text(err); });
+          var requestedPeer = e.detail.inviterId;
+          var conns = peer.connections[requestedPeer];
+          for (i = 0; i < conns.length; i++) { 
+                if (conns[i].peer === requestedPeer){
+                   currCon = i;
+              }
+          }
+          console.log(currCon);
+          var c = conns[currCon];
+            c.send({"username":e.detail.friendname, "pid":"p1", "label":"init"});
+          c.on('error', function(err) { $("#error").text(err); });
+    });
 
       document.addEventListener("initDone", function(e) {
-        var c = peer.connect(requestedPeer, {
-            label: 'initsync',
-            serialization: 'json',
-            metadata: {message: 'hi i want to chat with you!'}
-          });
-          c.on('open', function() {
-              c.send(e.detail);
-          }); 
-          c.on('error', function(err) { alert(err); });
+        // var c = peer.connect(requestedPeer, {
+        //     label: 'initsync',
+        //     serialization: 'json',
+        //     metadata: {message: 'hi i want to chat with you!'}
+        //   });
+        //   c.on('open', function() {
 
-        var cmove = peer.connect(requestedPeer, {
-          label: 'move',
-          serialization: 'json',
-          metadata: {message: 'hi i want to chat with you!'}
-        });
-        cmove.on('open', function() {
-             connect(cmove);
-        }); 
-        cmove.on('error', function(err) { alert(err); });
+        //       c.send(e.detail);
+        //   }); 
+        //   c.on('error', function(err) { $("#error").text(err); });
 
-        var cp = peer.connect(requestedPeer, {
-            label: 'power',
-            serialization: 'json',
-            metadata: {message: 'hi i want to chat with you!'}
-          });
-          cp.on('open', function() {
-              connect(cp)
-          }); 
-          cp.on('error', function(err) { alert(err); });
+        // var cmove = peer.connect(requestedPeer, {
+        //   label: 'move',
+        //   serialization: 'json',
+        //   metadata: {message: 'hi i want to chat with you!'}
+        // });
+        // cmove.on('open', function() {
+        //      connect(cmove);
+        // }); 
+        // cmove.on('error', function(err) { $("#error").text(err); });
 
+        // var cp = peer.connect(requestedPeer, {
+        //     label: 'power',
+        //     serialization: 'json',
+        //     metadata: {message: 'hi i want to chat with you!'}
+        //   });
+        //   cp.on('open', function() {
+        //       connect(cp)
+        //   }); 
+        //   cp.on('error', function(err) { $("#error").text(err); });
+          var conns = peer.connections[requestedPeer];
+          var c = conns[currCon];
+          var data = e.detail;
+          data.label = "initsync";
+            c.send(data);
+            c.on('error', function(err) { $("#error").text(err); });
           });
-      
-      // document.addEventListener("createMove", function(e) {
-      //   var cmove = peer.connect(requestedPeer, {
-      //     label: 'move',
-      //     serialization: 'json',
-      //     metadata: {message: 'hi i want to chat with you!'}
-      //   });
-      //   cmove.on('open', function() {
-      //        connect(cmove);
-      //   }); 
-      //   cmove.on('error', function(err) { alert(err); });
-      // });
 
       document.addEventListener("playerMoved", function(e) {
           var conns = peer.connections[requestedPeer];
-          var c = conns[2];
+          var c = conns[currCon];
           var data = e.detail;
+          data.label = "move";
             c.send(data);
-            c.on('error', function(err) { alert(err); });
+            c.on('error', function(err) { $("#error").text(err); });
           });
-
+    
       document.addEventListener("powerUpTaken", function(e) {
           var conns = peer.connections[requestedPeer];
-          var c = conns[3];
+          var c = conns[currCon];
           var data = e.detail;
+            data.label = "power";
             c.send(data);
-            c.on('error', function(err) { alert(err); });
+            c.on('error', function(err) { $("#error").text(err); });
           });
-            
+
+     document.addEventListener("inviteDecline", function(e) {
+          var conns = peer.connections[requestedPeer];
+          for (i = 0; i < conns.length; i++) { 
+                if (conns[i].peer === requestedPeer){
+                   currCon = i;
+              }
+          }
+          var c = conns[currCon];
+          var data = e.detail;
+            data.label = "decline";
+            c.send(data);
+            c.on('error', function(err) { $("#error").text(err); });
+          });
+      document.addEventListener("closeConnection", function(e) {
+          var conns = peer.connections[requestedPeer];
+          for (i = 0; i < conns.length; i++) { 
+                if (conns[i].peer === requestedPeer){
+                   currCon = i;
+              }
+          }
+          var c = conns[currCon];
+          c.label = "decline";
+          conns.splice (-1, 1);
+          c.close();
+          });
 
   // Close a connection.
   $('#close').click(function() {
