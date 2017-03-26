@@ -10,9 +10,15 @@ app.use(bodyParser.json());
 var multer  = require('multer');
 var upload = multer({ dest: 'uploads/' });
 
-var Datastore = require('nedb');
+// Database
+var mongo = require('mongodb');
+var monk = require('monk');
+var mongoose = require('mongoose');
+var db = monk('localhost:27017/usersDb');
+var users = db.get('usersDb');
 
-var users = new Datastore({ filename: 'db/users.db', autoload: true, timestampData: true});
+//var Datastore = require('nedb');
+//var users = new Datastore({ filename: 'db/users.db', autoload: true, timestampData: true});
 
 // User constructor
 var User = function(user){
@@ -42,50 +48,12 @@ app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: true, sameSite: true }
+    cookie: {secure: true, sameSite: true}
 }));
 
 app.use(function (req, res, next){
     console.log("HTTP request", req.method, req.url, req.body);
     return next();
-});
-
-// sanitization and validation
-var expressValidator = require('express-validator');
-app.use(expressValidator({
-    customValidators: {
-        isAlphaNumeric: function(value) {
-            return (/^[a-zA-Z0-9]+$/i.test(value));  
-        },
-        isAction: function(value) {
-            return (['addfriend','deletefriend'].indexOf(value) > -1);
-        },
-        fail: function(value){
-            return false;
-        }
-    }
-})); 
-
-var util = require('util');
-app.use(function(req, res, next){
-    Object.keys(req.body).forEach(function(arg){
-        switch(arg){
-            case 'username':
-                req.checkBody(arg, 'invalid username').isAlphaNumeric();
-                break;
-            case 'password':
-                break;
-            case 'action':
-                req.checkBody(arg, 'invalid action').isAction();
-                break;
-            default:
-                req.checkBody(arg, 'unknown argument').fail();
-        }
-    });
-    req.getValidationResult().then(function(result) {
-        if (!result.isEmpty()) return res.status(400).send('Validation errors: ' + util.inspect(result.array()));
-        else next();
-    });
 });
 
 // serving the frontend
@@ -124,7 +92,7 @@ app.post('/api/signin/', function (req, res, next) {
         if (err) return res.status(500).end(err);
         if (!user || !checkPassword(user, req.body.password)) return res.status(401).end("Unauthorized");
         req.session.user = user;
-        res.cookie('username', user.username, {secure: true, sameSite: true});
+        res.cookie('username', user.username);
         return res.json(user);
     });
 });
@@ -156,19 +124,30 @@ app.get('/api/users/:username/picture/', function (req, res, next) {
 });
 
 app.get('/api/friends/', function (req, res, next) {
-    console.log(users.getAllData());
     if (!req.session.user) return res.status(403).end("Forbidden");
-    var selectedIds = req.session.user.friends;
-    var ids = selectedIds.map(function(e){return {_id: e};});
-    users.find({ $or: ids}, function(err, selectedFriends) {
-        selectedFriends.forEach(function(e) {
-            if (e.picture) {
-                e.mimetype = e.picture.mimetype;
-            }
-            e.picture = "/api/users/" + e.username + "/picture/";
-            return e;
+    users.findOne({username: req.session.user.username}, function(err, user) {
+        if (err) return console.log(err);
+        var selectedIds = user.friends;
+        var ids = selectedIds.map(function(e){return {_id: e};});
+        //users.find().each(function(err, doc) {
+            //if (err) return console.log(err);
+            //console.log(doc);
+        //});
+        ids = ids.map(function(id) {
+            return mongoose.Types.ObjectId(id._id);
         });
-        return res.json(selectedFriends);
+        users.find({ '_id': {$in : ids}}, function(err, selectedFriends) {
+            if (err) return console.log(err);
+            console.log(selectedFriends);
+            selectedFriends.forEach(function(e) {
+                if (e.picture) {
+                    e.mimetype = e.picture.mimetype;
+                }
+                e.picture = "/api/users/" + e.username + "/picture/";
+                return e;
+            });
+            return res.json(selectedFriends);
+        });
     });
 });
 
@@ -176,7 +155,8 @@ app.get('/api/users/:username/', function(req, res, next) {
     if (!req.session.user) return res.status(403).end("Forbidden");
     users.findOne({username: req.params.username}, function(err, e) {
         if (err) return res.status(404).end("Player username:" + req.params.username + " does not exists");
-        var user = users.find(function(u) {return u.username === e.username;});
+        console.log(e);
+        //var user = users.find(function(u) {return u.username === e.username;});
         if (e.picture) {
             e.mimetype = e.picture.mimetype;
         }
@@ -213,14 +193,46 @@ app.patch('/api/deleteFriend/:id/', function (req, res, next) {
 });
 
 app.patch('/api/newId/:id/', function (req, res, next) {
-    req.session.user.peerId = req.params.id;
-    console.log(users.getAllData());
+    users.update({username: req.session.user.username}, {$set: {peerId: req.params.id}}, {}, function(err, n) {
+        if (err) return res.status(404).end("Not found");
+    });
+    //console.log(users.getAllData());
     return res.json("");
 });
 
 // Delete
 
-var http = require("http");
-http.createServer(app).listen(3000, function(){
-    console.log('HTTP on port 3000');
+var options = {
+    debug: true
+}
+
+var fs = require('fs');
+var PeerServer = require('peer').PeerServer;
+
+var custom_server = PeerServer({
+  port: 9000,
+  ssl: {
+    key: fs.readFileSync('./server.key'),
+    cert: fs.readFileSync('./server.crt')
+  },
+  path:"/peerjs"
+});
+
+custom_server.on('connection', function(id) {
+    console.log(id)
+});
+
+custom_server.on('disconnect', function(id) {
+    console.log(id + "deconnected")
+});
+
+var https = require('https');
+var privateKey = fs.readFileSync( './server.key' );
+var certificate = fs.readFileSync( './server.crt' );
+var config = {
+    key: privateKey,
+    cert: certificate
+};
+https.createServer(config, app).listen(3000, function () {
+    console.log('HTTPS on port 3000');
 });
