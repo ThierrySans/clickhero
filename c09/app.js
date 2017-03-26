@@ -10,8 +10,15 @@ app.use(bodyParser.json());
 var multer  = require('multer');
 var upload = multer({ dest: 'uploads/' });
 
-var Datastore = require('nedb');
-var users = new Datastore({ filename: 'db/users.db', autoload: true, timestampData: true});
+// Database
+var mongo = require('mongodb');
+var monk = require('monk');
+var mongoose = require('mongoose');
+var db = monk('localhost:27017/usersDb');
+var users = db.get('usersDb');
+
+//var Datastore = require('nedb');
+//var users = new Datastore({ filename: 'db/users.db', autoload: true, timestampData: true});
 
 // User constructor
 var User = function(user){
@@ -24,6 +31,7 @@ var User = function(user){
     this.friends = [];
     this.picture = null;
     this.peerId = null;
+    this.status = "Offline";
 };
 
 
@@ -41,6 +49,7 @@ app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
+    cookie: {secure: true, sameSite: true}
 }));
 
 app.use(function (req, res, next){
@@ -61,6 +70,9 @@ app.get('/profile.html', function (req, res, next) {
 });
 
 app.get('/signout/', function (req, res, next) {
+    users.update({username: req.session.user.username}, {$set: {status: "Offline"}}, {multi:false}, function (err, n) {
+        if (err) return res.status(404).end("User username:" + req.session.user.username + " does not exists");
+    });
     req.session.destroy(function(err) {
         if (err) return res.status(500).end(err);
         return res.redirect('/signin.html');
@@ -72,6 +84,9 @@ app.use(express.static('frontend'));
 // signout, signin
 
 app.get('/api/signout/', function (req, res, next) {
+    users.update({username: req.session.user.username}, {$set: {status: "Offline"}}, {multi:false}, function (err, n) {
+        if (err) return res.status(404).end("User username:" + req.session.user.username + " does not exists");
+    });
     req.session.destroy(function(err) {
         if (err) return res.status(500).end(err);
         return res.end();
@@ -79,6 +94,10 @@ app.get('/api/signout/', function (req, res, next) {
 });
 
 app.post('/api/signin/', function (req, res, next) {
+    if (!req.body.username || ! req.body.password) return res.status(400).send("Bad Request");
+    users.update({username: req.body.username}, {$set: {status: "Online"}}, {multi:false}, function (err, n) {
+        if (err) return res.status(404).end("User username:" + req.session.user.username + " does not exists");
+    }); 
     if (!req.body.username || ! req.body.password) return res.status(400).send("Bad Request");
     users.findOne({username: req.body.username}, function(err, user){
         if (err) return res.status(500).end(err);
@@ -118,9 +137,19 @@ app.get('/api/users/:username/picture/', function (req, res, next) {
 app.get('/api/friends/', function (req, res, next) {
     if (!req.session.user) return res.status(403).end("Forbidden");
     users.findOne({username: req.session.user.username}, function(err, user) {
+        if (err) return console.log(err);
         var selectedIds = user.friends;
         var ids = selectedIds.map(function(e){return {_id: e};});
-        users.find({ $or: ids}, function(err, selectedFriends) {
+        //users.find().each(function(err, doc) {
+            //if (err) return console.log(err);
+            //console.log(doc);
+        //});
+        ids = ids.map(function(id) {
+            return mongoose.Types.ObjectId(id._id);
+        });
+        users.find({ '_id': {$in : ids}}, function(err, selectedFriends) {
+            if (err) return console.log(err);
+            console.log(selectedFriends);
             selectedFriends.forEach(function(e) {
                 if (e.picture) {
                     e.mimetype = e.picture.mimetype;
@@ -137,7 +166,8 @@ app.get('/api/users/:username/', function(req, res, next) {
     if (!req.session.user) return res.status(403).end("Forbidden");
     users.findOne({username: req.params.username}, function(err, e) {
         if (err) return res.status(404).end("Player username:" + req.params.username + " does not exists");
-        var user = users.find(function(u) {return u.username === e.username;});
+        console.log(e);
+        //var user = users.find(function(u) {return u.username === e.username;});
         if (e.picture) {
             e.mimetype = e.picture.mimetype;
         }
@@ -183,11 +213,6 @@ app.patch('/api/newId/:id/', function (req, res, next) {
 
 // Delete
 
-
-// var http = require("http");
-// http.createServer(app).listen(3000, function(){
-//     console.log('HTTP on port 3000');
-// });
 var options = {
     debug: true
 }
