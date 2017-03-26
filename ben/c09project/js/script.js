@@ -10,16 +10,16 @@
         this.role = data.role;
         this.dx = 4;
         this.dy = 4;
+        this.point = 0;
     }
-    
+
     var canvas=document.getElementById("game_board");
     canvas.setAttribute('width', '800px');
     canvas.setAttribute('height', '500px');
     var ctx = canvas.getContext("2d");
-    var p1 = new Player({'username':"p1", 'id':"p1", 'x':10, 'y':10, 'role':"run"});
-    var p2 = new Player({'username':"p2", 'id':"p2", 'x':720, 'y':460, 'role':"catch"});
-    p2.dx = 5;
-    p2.dy = 5;
+    var p1;
+    var p2;
+    var game;
     var playerWidth = 30;
 
     var powerX, powerY;
@@ -28,8 +28,8 @@
     var mapColor = "#dcdcdc";
 
     // keyboard move ball
-    var color1 = "red";
-    var color2 = "orange";
+    var color1 = "#fb4000";
+    var color2 = "#1ba990";
     var p1Left = false, p1Right = false, p1Up = false, p1Down = false;
     var p2Left = false, p2Right = false, p2Up = false, p2Down = false;
 
@@ -59,7 +59,7 @@
         var c3 = parseColor(ctx.getImageData(x,y + height,1,1));
         var c4 = parseColor(ctx.getImageData(x + width,y + height,1,1));
         console.log(c1,c2,c3,c4);
-        console.log(c1 == mapColor || c2 == mapColor || c3 == mapColor || c4 == mapColor);
+        //console.log(c1 == mapColor || c2 == mapColor || c3 == mapColor || c4 == mapColor);
         return (c1 == mapColor || c2 == mapColor || c3 == mapColor || c4 == mapColor);
 
     }
@@ -116,107 +116,57 @@
     }
 
     function drawItem() {
-        ctx.fillStyle = "blue";
+        ctx.fillStyle = "#ffa500";
         ctx.fillRect(powerX, powerY, itemWidth, itemWidth);
     }
 
-    function drawMap() {
+    function drawMap(map) {
         ctx.fillStyle = mapColor;
-        ctx.fillRect(60,60,100,100);
-        ctx.fillRect(60,240,100,100);
-        ctx.fillRect(60,420,100,100);
-        ctx.fillRect(240,0,100,100);
-        ctx.fillRect(240,180,100,100);
-        ctx.fillRect(240,360,100,100);
-        ctx.fillRect(420,60,100,100);
-        ctx.fillRect(420,240,100,100);
-        ctx.fillRect(420,420,100,100);
-        ctx.fillRect(600,0,100,100);
-        ctx.fillRect(600,180,100,100);
-        ctx.fillRect(600,360,100,100);
-        ctx.fillRect(780,60,100,100);
-        ctx.fillRect(780,240,100,100);
-        ctx.fillRect(780,420,100,100);
-    }
-
-    function switchRole() {
-        if (p1.role == "catch") {
-            p1.role = "run";
-            p1.dx = 4;
-            p1.dy = 4;
+        if (map > 7) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(60,60,100,100);
+            ctx.fillRect(60,240,100,100);
+            ctx.fillRect(60,420,100,100);
+            ctx.fillRect(240,0,100,100);
+            ctx.fillRect(240,180,100,100);
+            ctx.fillRect(240,360,100,100);
+            ctx.fillRect(420,60,100,100);
+            ctx.fillRect(420,240,100,100);
+            ctx.fillRect(420,420,100,100);
+            ctx.fillRect(600,0,100,100);
+            ctx.fillRect(600,180,100,100);
+            ctx.fillRect(600,360,100,100);
+            ctx.fillRect(780,60,100,100);
+            ctx.fillRect(780,240,100,100);
+            ctx.fillRect(780,420,100,100);
+        } else if (map < 4) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(100,100,600,300);
         } else {
-            p1.role = "catch";
-            p1.dx = 5;
-            p1.dy = 5;
-        }
-
-        if (p2.role == "catch") {
-            p2.role = "run";
-            p2.dx = 4;
-            p2.dy = 4;
-        } else {
-            p2.role = "catch";
-            p2.dx = 5;
-            p2.dy = 5;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
     }
 
-    function makePowerUp() {
+    function makeValidPosition() {
         var valid = false;
+        var newX, newY;
         while (!valid) {
-            powerX = parseInt((canvas.width - itemWidth)*Math.random());
-            powerY = parseInt((canvas.height - itemWidth)*Math.random());
-            if ((powerX > 2 && powerY > 2 && powerX < canvas.width - 2 && powerY < canvas.height - 2) &&
-                !detectCollision(powerX, powerY, p1.x, p1.y, playerWidth, playerWidth) &&
-                !detectCollision(powerX + itemWidth, powerY, p1.x, p1.y, playerWidth, playerWidth) &&
-                !detectCollision(powerX, powerY + itemWidth, p1.x, p1.y, playerWidth, playerWidth) &&
-                !detectCollision(powerX + itemWidth, powerY + itemWidth, p1.x, p1.y, playerWidth, playerWidth) &&
-                !detectCollision(powerX, powerY, p2.x, p2.y, playerWidth, playerWidth) &&
-                !detectCollision(powerX + itemWidth, powerY, p2.x, p2.y, playerWidth, playerWidth) &&
-                !detectCollision(powerX, powerY + itemWidth, p2.x, p2.y, playerWidth, playerWidth) &&
-                !detectCollision(powerX + itemWidth, powerY + itemWidth, p2.x, p2.y, playerWidth, playerWidth) &&
-                !detectWall(powerX - 2, powerY - 2, itemWidth + 2, itemWidth + 2)) {
+            newX = parseInt((canvas.width - itemWidth)*Math.random());
+            newY = parseInt((canvas.height - itemWidth)*Math.random());
+            if ((newX > 2 && newY > 2 && newX < canvas.width - 2 && newY < canvas.height - 2) &&
+                !detectCollision(newX, newY, p1.x, p1.y, playerWidth, playerWidth) &&
+                !detectCollision(newX + itemWidth, newY, p1.x, p1.y, playerWidth, playerWidth) &&
+                !detectCollision(newX, newY + itemWidth, p1.x, p1.y, playerWidth, playerWidth) &&
+                !detectCollision(newX + itemWidth, newY + itemWidth, p1.x, p1.y, playerWidth, playerWidth) &&
+                !detectCollision(newX, newY, p2.x, p2.y, playerWidth, playerWidth) &&
+                !detectCollision(newX + itemWidth, newY, p2.x, p2.y, playerWidth, playerWidth) &&
+                !detectCollision(newX, newY + itemWidth, p2.x, p2.y, playerWidth, playerWidth) &&
+                !detectCollision(newX + itemWidth, newY + itemWidth, p2.x, p2.y, playerWidth, playerWidth) &&
+                !detectWall(newX - 2, newY - 2, itemWidth + 2, itemWidth + 2)) {
                 valid = true;
             }
         }
-    }
-
-    function detectPowerUp(p) {
-        var cover = (detectCollision(powerX, powerY, p.x, p.y, playerWidth, playerWidth) &&
-                detectCollision(powerX + itemWidth, powerY, p.x, p.y, playerWidth, playerWidth) &&
-                detectCollision(powerX, powerY + itemWidth, p.x, p.y, playerWidth, playerWidth) &&
-                detectCollision(powerX + itemWidth, powerY + itemWidth, p.x, p.y, playerWidth, playerWidth));
-        if (cover) {
-            if (p.role == "catch") {
-                p.dx ++;
-                p.dy ++;
-            } else if (p.role == "run"){
-                switchRole();
-            }
-            makePowerUp();
-        }
-    }
-
-    function detectCatch() {
-        var cover = (detectCollision(p1.x, p1.y, p2.x, p2.y, playerWidth, playerWidth) ||
-                detectCollision(p1.x + playerWidth, p1.y, p2.x, p2.y, playerWidth, playerWidth) ||
-                detectCollision(p1.x, p1.y + playerWidth, p2.x, p2.y, playerWidth, playerWidth) ||
-                detectCollision(p1.x + playerWidth, p1.y + playerWidth, p2.x, p2.y, playerWidth, playerWidth));
-        if (cover) {
-            if (p1.role == "catch") {
-                console.log("p1 win");
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.font = "80px Arial";
-                ctx.fillText("P1 WIN!!!",200,100);
-            } else {
-                console.log("p2 win");
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.font = "80px Arial";
-                ctx.fillStyle = "black";
-                ctx.fillText("P2 WIN!!!",200,100);
-            }
-        }
-        return cover;
+        return [newX, newY];
     }
 
     function movePlayers() {
@@ -270,56 +220,6 @@
                 }
             }
         }
-/*
-        // Up arrow was pressed
-        if (p1Up && p1.y - p1.dy > 0) {
-            p1.y -= p1.dy;
-        } else if (p1Up && p1.y - p1.dy <= 0) {
-            p1.y = 0;
-        }
-        // Down arrow was pressed
-        else if (p1Down && p1.y + p1.dy + playerWidth < canvas.height) {
-            p1.y += p1.dy;
-        } else if (p1Down && p1.y + p1.dy + playerWidth >= canvas.height) {
-            p1.y = canvas.height - playerWidth;
-        }
-        // Left arrow was pressed
-        else if (p1Left && p1.x - p1.dx > 0) {
-            p1.x -= p1.dx;
-        } else if (p1Left && p1.x - p1.dx <= 0) {
-            p1.x = 0;
-        }
-        // Right arrow was pressed
-        else if (p1Right && p1.x + p1.dx + playerWidth < canvas.width){
-            p1.x += p1.dx;
-        } else if (p1Right && p1.x + p1.dx + playerWidth >= canvas.width) {
-            p1.x = canvas.width - playerWidth;
-        }
-
-        // Up arrow(w) was pressed
-        if (p2Up && p2.y - p2.dy > 0){
-            p2.y -= p2.dy;
-        } else if (p2Up && p2.y - p2.dy <= 0) {
-            p2.y = 0;
-        }
-        // Down arrow(s) was pressed
-        else if (p2Down && p2.y + p2.dy + playerWidth < canvas.height){
-            p2.y += p2.dy;
-        } else if (p2Down && p2.y + p2.dy + playerWidth >= canvas.height) {
-            p2.y = canvas.height - playerWidth;
-        }
-        // Left arrow(a) was pressed 
-        else if (p2Left && p2.x - p2.dx > 0){
-            p2.x -= p2.dx;
-        } else if (p2Left && p2.x - p2.dx <= 0) {
-            p2.x = 0;
-        }
-        // Right arrow(d) was pressed
-        else if (p2Right && p2.x + p2.dx + playerWidth < canvas.width){
-            p2.x += p2.dx;
-        } else if (p2Right && p2.x + p2.dx + playerWidth >= canvas.width) {
-            p2.x = canvas.width - playerWidth;
-        }*/
 
         if (p2Up) {
             var d = wallDistance("up",p2);
@@ -438,9 +338,143 @@
         }
     }
 
-    function draw() {
+    function countdown() {
+        if (game.time < 0) {
+            return;
+        }
+        document.getElementById('countdown').innerHTML = ('0' + game.time).slice(-2);
+        game.time -= 1;
+        setTimeout(countdown,1000);
+    }
+
+    //--------------------------------------------------
+    //---------------- game one algo -------------------
+    //--------------------------------------------------
+    function detectPowerUp(p) {
+        var cover = (detectCollision(powerX, powerY, p.x, p.y, playerWidth, playerWidth) &&
+                detectCollision(powerX + itemWidth, powerY, p.x, p.y, playerWidth, playerWidth) &&
+                detectCollision(powerX, powerY + itemWidth, p.x, p.y, playerWidth, playerWidth) &&
+                detectCollision(powerX + itemWidth, powerY + itemWidth, p.x, p.y, playerWidth, playerWidth));
+        if (cover) {
+            if (p.role == "catch") {
+                p.dx ++;
+                p.dy ++;
+            } else if (p.role == "run"){
+                switchRole();
+            }
+            var xy = makeValidPosition();
+            powerX = xy[0];
+            powerY = xy[1];
+        }
+    }
+
+    function detectCatch() {
+        var cover = (detectCollision(p1.x, p1.y, p2.x, p2.y, playerWidth, playerWidth) ||
+                detectCollision(p1.x + playerWidth, p1.y, p2.x, p2.y, playerWidth, playerWidth) ||
+                detectCollision(p1.x, p1.y + playerWidth, p2.x, p2.y, playerWidth, playerWidth) ||
+                detectCollision(p1.x + playerWidth, p1.y + playerWidth, p2.x, p2.y, playerWidth, playerWidth));
+        if (cover) {
+            if (p1.role == "catch") {
+                console.log("p1 win");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.font = "80px Arial";
+                ctx.fillText("P1 WIN!!!",200,100);
+            } else {
+                console.log("p2 win");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.font = "80px Arial";
+                ctx.fillStyle = "black";
+                ctx.fillText("P2 WIN!!!",200,100);
+            }
+        }
+        return cover;
+    }
+
+    function switchRole() {
+        if (p1.role == "catch") {
+            p1.role = "run";
+            p1.dx = 4;
+            p1.dy = 4;
+        } else {
+            p1.role = "catch";
+            p1.dx = 4;
+            p1.dy = 4;
+        }
+
+        if (p2.role == "catch") {
+            p2.role = "run";
+            p2.dx = 4;
+            p2.dy = 4;
+        } else {
+            p2.role = "catch";
+            p2.dx = 4;
+            p2.dy = 4;
+        }
+    }
+
+
+    //--------------------------------------------------
+    //---------------- game two algo -------------------
+    //--------------------------------------------------
+    function detectPoint(p) {
+        var cover = (detectCollision(powerX, powerY, p.x, p.y, playerWidth, playerWidth) &&
+                detectCollision(powerX + itemWidth, powerY, p.x, p.y, playerWidth, playerWidth) &&
+                detectCollision(powerX, powerY + itemWidth, p.x, p.y, playerWidth, playerWidth) &&
+                detectCollision(powerX + itemWidth, powerY + itemWidth, p.x, p.y, playerWidth, playerWidth));
+        if (cover) {
+            p.point += 1;
+            console.log(p);
+            var xy = makeValidPosition();
+            powerX = xy[0];
+            powerY = xy[1];
+        }
+    }
+
+    function comparePoints() {
+        if (p1.point > p2.point) {
+            console.log("p1 win");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "80px Arial";
+            ctx.fillStyle = "black";
+            ctx.fillText("P1 WIN!!!",200,100);
+        } else if (p2.point > p1.point) {
+            console.log("p2 win");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "80px Arial";
+            ctx.fillStyle = "black";
+            ctx.fillText("P2 WIN!!!",200,100);
+        } else {
+            console.log("draw");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "80px Arial";
+            ctx.fillStyle = "black";
+            ctx.fillText("DRAW...",200,100);
+        }
+    }
+
+    //--------------------------------------------------
+    //---------------- game three algo -----------------
+    //--------------------------------------------------
+
+    function createMonster() {
+        if (game.time < 0) {
+            return;
+        }
+        var monster = {};
+        monster.dx = parseInt(5*Math.random() + 1);
+        monster.dy = parseInt(5*Math.random() + 1);
+        monster.mode = parseInt(2*Math.random() + 1);
+        game.monsters.push(monster);
+        setTimeout(createMonster, 10000);
+    }
+
+    //--------------------------------------------------
+    //-------------------- game init -------------------
+    //--------------------------------------------------
+
+    function gameOne() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawMap();
+        drawMap(game.map);
         movePlayers();
         if (detectCatch()){
             return;
@@ -450,14 +484,92 @@
         drawItem();
         drawPlayer(p1);
         drawPlayer(p2);
-        requestAnimationFrame(draw);
+        requestAnimationFrame(gameOne);
     }
 
-    drawMap();
-    makePowerUp();
-    draw();
+    function gameTwo() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (game.time < 0) {
+            comparePoints();
+            return;
+        }
+        drawMap(game.map);
+        movePlayers();
+        detectPoint(p1);
+        detectPoint(p2);
+        drawItem();
+        drawPlayer(p1);
+        drawPlayer(p2);
+        requestAnimationFrame(gameTwo);
+
+    }
+
+    function gameThree() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (game.time < 0) {
+            console.log("draw");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "80px Arial";
+            ctx.fillStyle = "black";
+            ctx.fillText("DRAW...",200,100);
+            return;
+        }
+        drawMap(game.map);
+        movePlayers();
+    }
+
+    function init(mode) {
+        game = {};
+        game.map = parseInt(10*Math.random());
+        game.mode = mode;
+        p1 = new Player({'username':"p1", 'id':"p1", 'x':10, 'y':10, 'role':"run"});
+        p2 = new Player({'username':"p2", 'id':"p2", 'x':720, 'y':460, 'role':"catch"});
+        p1.point = 0;
+        p2.point = 0;
+        drawMap(game.map);
+        if (game.mode == 1) {
+            var xy = makeValidPosition();
+            powerX = xy[0];
+            powerY = xy[1];
+            gameOne();
+        } else if (game.mode == 2) {
+            game.time = 10;
+            var xy = makeValidPosition();
+            powerX = xy[0];
+            powerY = xy[1];
+            gameTwo();
+            countdown();
+        } else if (game.mode == 3) {
+            game.time = 60
+            gameThree();
+            createMonster();
+            countdown();
+        }
+    };
 
     document.addEventListener("keydown", keyDownHandler, true);
     document.addEventListener("keyup", keyUpHandler, false);
+
+    document.getElementById('mode1').onclick = function(e) {
+        e.preventDefault();
+        document.getElementById('gamemode').innerHTML = "CATCH & RUN";
+        document.getElementById('countdown').innerHTML = "UNLIMITED";
+        init(1);
+    };
+
+    document.getElementById('mode2').onclick = function(e) {
+        e.preventDefault();
+        document.getElementById('gamemode').innerHTML = "COLLECT POINTS";
+        document.getElementById('countdown').innerHTML = "60";
+        init(2);
+    };
+
+    document.getElementById('mode3').onclick = function(e) {
+        e.preventDefault();
+        document.getElementById('gamemode').innerHTML = "DODGE BALL";
+        document.getElementById('countdown').innerHTML = "60";
+        init(3);
+    };
+
 
 }());

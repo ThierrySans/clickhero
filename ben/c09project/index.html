@@ -11,18 +11,32 @@
     <header>
         <h1>Game</h1>
     </header>
-    <div>
-    <canvas id="game_board">
-        Sorry, your browser does not support HTML5 Canvas.
-    </canvas>
+    <div id="mode_select">
+        <div class="mode" id="mode1">catch and run</div>
+        <div class="mode" id="mode2">collect points</div>
+        <div class="mode" id="mode2">dodge ball</div>
     </div>
-    <div id="player_nav">
-    <div id="p1_display" class="display">p1</div>
-    <div id="p1_role" class="display"></div>
-    <div id="p2_role" class="display"></div>
-    <div id="p2_display" class="display">p2</div>
+    <div id="game_display">
+        <div>MODE: </div><div id="gamemode"></div>
+        <div>TIME: </div><div id="countdown"></div>
+    </div>
+    <div id="play">
+    <div id="p1">
+        <div id="p1_display" class="display"></div>
+        <div id="p1_role" class="display"></div>
+    </div>
+    <div>
+        <canvas id="game_board">
+            Sorry, your browser does not support HTML5 Canvas.
+        </canvas>
+    </div>
+    <div id="p2">
+        <div id="p2_display" class="display"></div>
+        <div id="p2_role" class="display"></div>
+    </div>
     </div>
 
     <script src="js/script.js"></script>
+    <!--<scriot src="js/script2.js"></scriot>-->
 </body>
 </html>
