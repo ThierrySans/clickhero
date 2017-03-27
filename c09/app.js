@@ -10,19 +10,23 @@ app.use(bodyParser.json());
 var multer  = require('multer');
 var upload = multer({ dest: 'uploads/' });
 
-var mongoServer = 'mongo';
+var Datastore = require('nedb');
+
+var users = new Datastore({ filename: 'db/users.db', autoload: true, timestampData: true});
+
+//var mongoServer = 'mongo';
 
 // Database
-var mongo = require('mongodb').MongoClient;
-var monk = require('monk');
-var mongoose = require('mongoose');
-var users;
+//var mongo = require('mongodb').MongoClient;
+//var monk = require('monk');
+//var mongoose = require('mongoose');
+//var users;
 
-mongo.connect('mongodb://' + mongoServer + ':27017/test', function(err, db) {
-    if (err) return console.log(err);
-    console.log("Mongo database connected");
-    users = db.collection('test');
-});
+//mongo.connect('mongodb://' + mongoServer + ':27017/test', function(err, db) {
+    //if (err) return console.log(err);
+    //console.log("Mongo database connected");
+    //users = db.collection('test');
+//});
 
 // var db = monk('localhost:27017/usersDb');
 // var users = db.get('usersDb');
@@ -144,32 +148,19 @@ app.get('/api/users/:username/picture/', function (req, res, next) {
 });
 
 app.get('/api/friends/', function (req, res, next) {
+    console.log(users.getAllData());
     if (!req.session.user) return res.status(403).end("Forbidden");
-    users.findOne({username: req.session.user.username}, function(err, user) {
-        if (err) return console.log(err);
-        var selectedIds = user.friends;
-        var ids = selectedIds.map(function(e){return {_id: e};});
-        users.find().each(function(err, doc) {
-            if (err) return console.log(err);
-            console.log(doc);
+    var selectedIds = req.session.user.friends;
+    var ids = selectedIds.map(function(e){return {_id: e};});
+    users.find({ $or: ids}, function(err, selectedFriends) {
+        selectedFriends.forEach(function(e) {
+            if (e.picture) {
+                e.mimetype = e.picture.mimetype;
+            }
+            e.picture = "/api/users/" + e.username + "/picture/";
+            return e;
         });
-        var objectIds = ids.map(function(id) {
-            return mongoose.Types.ObjectId(id._id);
-        });
-        users.find({ '_id': {$in : objectIds}}, function(err, selectedFriends) {
-            //console.log("showing selected friends now");
-            //console.log(selectedFriends);
-            if (err) return console.log(err);
-            var myFriends = selectedFriends.map(function(e) {
-                if (e.picture) {
-                    e.mimetype = e.picture.mimetype;
-                }
-                e.picture = "/api/users/" + e.username + "/picture/";
-                console.log(e);
-                return e;
-            });
-            return res.json(myFriends);
-        });
+        return res.json(selectedFriends);
     });
 });
 
