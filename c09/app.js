@@ -16,11 +16,12 @@ var mongoServer = 'mongo';
 var mongo = require('mongodb').MongoClient;
 var monk = require('monk');
 var mongoose = require('mongoose');
+var users;
 
 mongo.connect('mongodb://' + mongoServer + ':27017/test', function(err, db) {
     if (err) return console.log(err);
     console.log("Mongo database connected");
-    var users = db.collection('test');
+    users = db.collection('test');
 });
 
 // var db = monk('localhost:27017/usersDb');
