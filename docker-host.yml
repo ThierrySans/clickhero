@@ -1,0 +1,5 @@
+mount: /home/nodejs/uploads
+domain: clickhero.cms-weblab.utsc.utoronto.ca
+ssl:
+    cert: /server.crt
+    key: /server.key
