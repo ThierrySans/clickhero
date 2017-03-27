@@ -10,11 +10,7 @@ app.use(bodyParser.json());
 var multer  = require('multer');
 var upload = multer({ dest: 'uploads/' });
 
-if (app.get('env') === 'production'){ 
-    var mongoServer = 'mongo';
-}else{
-    var mongoServer = 'localhost';
-}
+var mongoServer = 'mongo';
 
 // Database
 var mongo = require('mongodb').MongoClient;
