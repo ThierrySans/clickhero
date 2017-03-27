@@ -156,6 +156,7 @@ app.get('/api/friends/', function (req, res, next) {
             return mongoose.Types.ObjectId(id._id);
         });
         users.find({ '_id': {$in : ids}}, function(err, selectedFriends) {
+            console.log(selectedFriends);
             //if (err) return console.log(err);
             //selectedFriends.forEach(function(e) {
                 //if (e.picture) {
