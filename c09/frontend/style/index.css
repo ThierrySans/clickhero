@@ -328,27 +328,27 @@ li a:hover {
     transform: scale(0.9);
 }
 
-#1 {
+#mode1 {
     background-image: url(../media/red.png);
 }
 
-#1:active {
+#mode1:active {
     background-image: url(../media/red.png);
 }
 
-#2 {
+#mode2 {
     background-image: url(../media/yellow.png);
 }
 
-#2:active {
+#mode2:active {
     background-image: url(../media/yellow.png);
 }
 
-#3 {
+#mode3 {
     background-image: url(../media/blue.png);
 }
 
-#3:active {
+#mode3:active {
     background-image: url(../media/blue.png);
 }
 
@@ -358,7 +358,9 @@ li a:hover {
 }
 
 #game_board {
-    margin-left: 50px;
+    width: 800px;
+    height: 500px;
+    border: 5px solid #000000;
 }
 
 #main{
@@ -393,4 +395,53 @@ li a:hover {
 }
 #invite{
     flex-direction: row;
+}
+
+#play {
+	width: 90%;
+	height: 100%;
+	margin: auto;
+	display: flex;
+	justify-content: space-between;
+}
+
+.display {
+	height: 125px;
+	width: 125px;
+}
+
+#p1 {
+	margin-top: 20px;
+}
+
+#p2 {
+	margin-top: 20px;
+}
+
+#p1_display {
+	border: 1px solid #ff1144;
+	background-image: url('../media/p1.jpg');
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+
+#p2_display {
+	border: 1px solid #1ba990;
+	background-image: url('../media/p2.jpg');
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+
+#p1_status {
+	border: 1px solid #ff1144;
+	font-size: 60px;
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+
+#p2_status {
+	border: 1px solid #1ba990;
+	font-size: 60px;
+	background-size: 100%;
+	background-repeat: no-repeat;
 }

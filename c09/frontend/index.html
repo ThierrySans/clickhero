@@ -29,9 +29,25 @@
         
         <div id="game_map">
             <div class="back_button" id="back"></div>
+            <div id="game_display">
+                <div>MODE: </div><div id="gamemode"></div>
+                <div>TIME: </div><div id="countdown"></div>
+            </div>
+            <div id="play">
+            <div id="p1">
+                <div id="p1_display" class="display"></div>
+                <div id="p1_status" class="display"></div>
+            </div>
+            <div>
             <canvas id="game_board" width="800" height="500" style="border:5px solid #000000">
                     Sorry, your browser does not support HTML5 Canvas.
             </canvas>
+            </div>
+            <div id="p2">
+                <div id="p2_display" class="display"></div>
+                <div id="p2_status" class="display"></div>
+            </div> 
+            </div>
         </div>
 
     <div id="game">
@@ -41,7 +57,7 @@
         </div>
         <div class="col-sm-6">
             <div class="mode_name" id="mode_name">Mode 1</div>
-            <div class="start_button" id="1"></div>
+            <div class="start_button" id="mode1"></div>
         </div>
         <div class="col-sm-3">
             <div class="right_button" id="right"></div>

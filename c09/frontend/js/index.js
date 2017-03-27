@@ -115,26 +115,26 @@
     document.getElementById("left").onclick = function(e) {
         if (document.getElementById("mode_name").innerHTML == "Mode 1") {
             document.getElementById("mode_name").innerHTML = "Mode 3";
-            document.getElementById("1").id = "3";
+            document.getElementById("mode1").id = "mode3";
         } else if (document.getElementById("mode_name").innerHTML == "Mode 2") {
             document.getElementById("mode_name").innerHTML = "Mode 1";
-            document.getElementById("2").id = "1";
+            document.getElementById("mode2").id = "mode1";
         } else {
             document.getElementById("mode_name").innerHTML = "Mode 2";
-            document.getElementById("3").id = "2";
+            document.getElementById("mode3").id = "mode2";
         }
     };
     
     document.getElementById("right").onclick = function(e) {
         if (document.getElementById("mode_name").innerHTML == "Mode 1") {
             document.getElementById("mode_name").innerHTML = "Mode 2";
-            document.getElementById("1").id = "2";
+            document.getElementById("mode1").id = "mode2";
         } else if (document.getElementById("mode_name").innerHTML == "Mode 2") {
             document.getElementById("mode_name").innerHTML = "Mode 3";
-            document.getElementById("2").id = "3";
+            document.getElementById("mode2").id = "mode3";
         } else {
             document.getElementById("mode_name").innerHTML = "Mode 1";
-            document.getElementById("3").id = "1";
+            document.getElementById("mode3").id = "mode1";
         }
     };
     
@@ -151,7 +151,7 @@
                 });
                 data.friendname = user[0].username;
                 data.friendId = user[0].peerId;
-                data.mode = document.getElementsByClassName("start_button")[0].id;
+                data.mode = document.getElementsByClassName("start_button")[0].id.slice(4, 5);
                 console.log(data);
                 document.dispatchEvent(new CustomEvent('onInvite', {detail: data}));
             });
