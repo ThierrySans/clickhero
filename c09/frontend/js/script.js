@@ -57,8 +57,10 @@
             var xy = makeValidPosition();
             game.powerX = xy[0];
             game.powerY = xy[1];
-            //document.getElementById('gamemode').innerHTML = "CATCH & RUN";
-            //document.getElementById('countdown').innerHTML = "UNLIMITED";
+            document.getElementById('p1_status').style.backgroundImage = "url('../media/catch.png')";
+            document.getElementById('p2_status').style.backgroundImage = "url('../media/run.png')";
+            document.getElementById('gamemode').innerHTML = "CATCH & RUN";
+            document.getElementById('countdown').innerHTML = "UNLIMITED";
             gameOne();
         } else if (game.mode == 2) {
             model.getActiveUsername(function (err, currUser) {
@@ -78,8 +80,12 @@
             local.dy = 2*defaultSp;
             other.dx = 2*defaultSp;
             other.dx = 2*defaultSp;
-            //document.getElementById('gamemode').innerHTML = "COLLECT POINTS";
-            //document.getElementById('countdown').innerHTML = "60";
+            document.getElementById('gamemode').innerHTML = "COLLECT POINTS";
+            document.getElementById('countdown').innerHTML = "60";
+            document.getElementById('p1_status').style.backgroundImage = "none";
+            document.getElementById('p2_status').style.backgroundImage = "none";
+            document.getElementById('p1_status').innerHTML = p1.point;
+            document.getElementById('p2_status').innerHTML = p2.point;
             gameTwo();
             countdown();
         } else if (game.mode == 3) {
@@ -98,21 +104,20 @@
             local.dy = 2*defaultSp;
             other.dx = 2*defaultSp;
             other.dx = 2*defaultSp;
-            //document.getElementById('gamemode').innerHTML = "DODGE BALL";
-            //document.getElementById('countdown').innerHTML = "60";
+            document.getElementById('gamemode').innerHTML = "DODGE BALL";
+            document.getElementById('countdown').innerHTML = "60";
+            document.getElementById('p1_status').style.backgroundImage = "url('../media/ghost.png')";
+            document.getElementById('p2_status').style.backgroundImage = "url('../media/ghost.png')";
             gameThree();
             createMonster();
             moveMonsters();
             countdown();
         }
-
-
         var data = {"p1":local, "p2":other, "game":game};
         document.dispatchEvent(new CustomEvent("initDone", {'detail':data}));
     }
 
     function initSync(dataP1,dataP2,dataGame) {
-        console.log(dataP1, dataP2);
         document.getElementById("game_map").style.display = "block";
         document.getElementById("game").style.display = "none";
         canvas=document.getElementById("game_board");
@@ -130,11 +135,25 @@
         });
         game = dataGame;
         if (game.mode == 1) {
+            document.getElementById('p1_status').style.backgroundImage = "url('../media/catch.png')";
+            document.getElementById('p2_status').style.backgroundImage = "url('../media/run.png')";
+            document.getElementById('gamemode').innerHTML = "CATCH & RUN";
+            document.getElementById('countdown').innerHTML = "UNLIMITED";
             gameOne();
         } else if (game.mode == 2) {
+            document.getElementById('gamemode').innerHTML = "COLLECT POINTS";
+            document.getElementById('countdown').innerHTML = "60";
+            document.getElementById('p1_status').style.backgroundImage = "none";
+            document.getElementById('p2_status').style.backgroundImage = "none";
+            document.getElementById('p1_status').innerHTML = p1.point;
+            document.getElementById('p2_status').innerHTML = p2.point;
             gameTwo();
             countdown();
         } else if (game.mode == 3) {
+            document.getElementById('gamemode').innerHTML = "DODGE BALL";
+            document.getElementById('countdown').innerHTML = "60";
+            document.getElementById('p1_status').style.backgroundImage = "url('../media/ghost.png')";
+            document.getElementById('p2_status').style.backgroundImage = "url('../media/ghost.png')";
             gameThree();
             countdown();
         }
@@ -179,8 +198,6 @@
         var c2 = parseColor(ctx.getImageData(x + width,y,1,1));
         var c3 = parseColor(ctx.getImageData(x,y + height,1,1));
         var c4 = parseColor(ctx.getImageData(x + width,y + height,1,1));
-        console.log(c1,c2,c3,c4);
-        console.log(c1 == mapColor || c2 == mapColor || c3 == mapColor || c4 == mapColor);
         return (c1 == mapColor || c2 == mapColor || c3 == mapColor || c4 == mapColor);
 
     }
@@ -193,7 +210,6 @@
             for (i = 1; i <= dy; i++) {
                 var c1 = parseColor(ctx.getImageData(p.x,p.y - i,1,1));
                 var c2 = parseColor(ctx.getImageData(p.x + playerWidth,p.y - i,1,1));
-                console.log(c1, c2);
                 if (c1 == mapColor || c2 == mapColor) {
                     return i;
                 }
@@ -648,6 +664,11 @@
     }
 
     function gameThree() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawMap(game.map);
+        drawPlayer(p1);
+        drawPlayer(p2);
+        drawMonsters();
         if (game.time < 0) {
             console.log("draw");
             //ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -695,13 +716,11 @@
     document.addEventListener("gameStarted", function(e){
         var data = e.detail;
         data.pid = "p" + parseInt(2*Math.random() + 1);
-        console.log(data);
         init(data.username, data.pid, data.mode);
     });
 
     document.addEventListener("otherSideInited", function(e){
         var data = e.detail;
-        console.log(data);
         initSync(data.p1, data.p2, data.game);
     });
 
