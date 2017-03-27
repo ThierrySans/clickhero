@@ -17,7 +17,7 @@
                 name.className = "header_button";
                 name.innerHTML = `<a href="/">${username}</a>`;
                 console.log(friends);
-                Array.from(friends).forEach(function (friend) {
+                friends.forEach(function (friend) {
                     var e = document.createElement('div');
                     e.className = "players";
                     e.id = friend._id;
