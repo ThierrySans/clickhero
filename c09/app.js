@@ -159,7 +159,7 @@ app.get('/api/friends/', function (req, res, next) {
             //console.log("showing selected friends now");
             //console.log(selectedFriends);
             if (err) return console.log(err);
-            selectedFriends.forEach(function(e) {
+            var myFriends = selectedFriends.map(function(e) {
                 if (e.picture) {
                     e.mimetype = e.picture.mimetype;
                 }
@@ -167,7 +167,7 @@ app.get('/api/friends/', function (req, res, next) {
                 console.log(e);
                 return e;
             });
-            return res.json(selectedFriends);
+            return res.json(myFriends);
         });
     });
 });
