@@ -148,22 +148,22 @@ app.get('/api/friends/', function (req, res, next) {
         if (err) return console.log(err);
         var selectedIds = user.friends;
         var ids = selectedIds.map(function(e){return {_id: e};});
-        //users.find().each(function(err, doc) {
-            //if (err) return console.log(err);
-            //console.log(doc);
-        //});
+        users.find().each(function(err, doc) {
+            if (err) return console.log(err);
+            console.log(doc);
+        });
         ids = ids.map(function(id) {
             return mongoose.Types.ObjectId(id._id);
         });
         users.find({ '_id': {$in : ids}}, function(err, selectedFriends) {
             if (err) return console.log(err);
-            selectedFriends.forEach(function(e) {
-                if (e.picture) {
-                    e.mimetype = e.picture.mimetype;
-                }
-                e.picture = "/api/users/" + e.username + "/picture/";
-                return e;
-            });
+            //selectedFriends.forEach(function(e) {
+                //if (e.picture) {
+                    //e.mimetype = e.picture.mimetype;
+                //}
+                //e.picture = "/api/users/" + e.username + "/picture/";
+                //return e;
+            //});
             return res.json(selectedFriends);
         });
     });
