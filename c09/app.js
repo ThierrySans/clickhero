@@ -21,7 +21,7 @@ var users;
 mongo.connect('mongodb://' + mongoServer + ':27017/test', function(err, db) {
     if (err) return console.log(err);
     console.log("Mongo database connected");
-    users = db.get('test');
+    users = db.collection('test');
 });
 
 // var db = monk('localhost:27017/usersDb');
