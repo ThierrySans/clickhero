@@ -155,7 +155,7 @@ app.get('/api/friends/', function (req, res, next) {
         ids = ids.map(function(id) {
             return mongoose.Types.ObjectId(id._id);
         });
-        //users.find({ '_id': {$in : ids}}, function(err, selectedFriends) {
+        users.find({ '_id': {$in : ids}}, function(err, selectedFriends) {
             //if (err) return console.log(err);
             //selectedFriends.forEach(function(e) {
                 //if (e.picture) {
@@ -164,8 +164,8 @@ app.get('/api/friends/', function (req, res, next) {
                 //e.picture = "/api/users/" + e.username + "/picture/";
                 //return e;
             //});
-            //return res.json(selectedFriends);
-        //});
+            return res.json(selectedFriends);
+        });
     });
 });
 
