@@ -405,17 +405,49 @@ li a:hover {
 	justify-content: space-between;
 }
 
+#game_container {
+    border: 1px solid #000000;
+    width: 90%;
+    min-width: 800px;
+    margin: auto;
+}
+
+#game_display {
+    text-align: center;
+    font-size: 20px;
+    font-family: "Arial Black", Gadget, sans-serif;
+}
+
+#status_bar {
+    width: 810px;
+    height: 100%;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+#countdown {
+    font-size: 30px;
+}
+
 .display {
 	height: 125px;
 	width: 125px;
 }
 
+#board_container {
+    width: 810px;
+    margin: auto;
+}
+
 #p1 {
-	margin-top: 20px;
+    display: flex;
+    justify-content: flex-start;
 }
 
 #p2 {
-	margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
 }
 
 #p1_display {
