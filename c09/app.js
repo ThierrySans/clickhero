@@ -112,7 +112,6 @@ app.post('/api/signin/', function (req, res, next) {
         if (err) return res.status(500).end(err);
         if (!user || !checkPassword(user, req.body.password)) return res.status(401).end("Unauthorized");
         req.session.user = user;
-        res.cookie('username', user.username);
         return res.json(user);
     });
 });
