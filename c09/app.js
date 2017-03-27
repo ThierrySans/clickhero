@@ -157,14 +157,14 @@ app.get('/api/friends/', function (req, res, next) {
         });
         users.find({ '_id': {$in : ids}}, function(err, selectedFriends) {
             console.log(selectedFriends);
-            //if (err) return console.log(err);
-            //selectedFriends.forEach(function(e) {
-                //if (e.picture) {
-                    //e.mimetype = e.picture.mimetype;
-                //}
-                //e.picture = "/api/users/" + e.username + "/picture/";
-                //return e;
-            //});
+            if (err) return console.log(err);
+            selectedFriends.forEach(function(e) {
+                if (e.picture) {
+                    e.mimetype = e.picture.mimetype;
+                }
+                e.picture = "/api/users/" + e.username + "/picture/";
+                return e;
+            });
             return res.json(selectedFriends);
         });
     });
