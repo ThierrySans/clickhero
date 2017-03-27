@@ -152,14 +152,14 @@ app.get('/api/friends/', function (req, res, next) {
             //if (err) return console.log(err);
             //console.log(doc);
         //});
-        ids = ids.map(function(id) {
-            return mongoose.Types.ObjectId(id._id);
-        });
+        //ids = ids.map(function(id) {
+            //return mongoose.Types.ObjectId(id._id);
+        //});
         users.find({ '_id': {$in : ids}}, function(err, selectedFriends) {
             console.log("showing selected friends now");
-            //console.log(selectedFriends);
+            console.log(selectedFriends);
             if (err) return console.log(err);
-            selectedFriends.map(function(e) {
+            selectedFriends.forEach(function(e) {
                 if (e.picture) {
                     e.mimetype = e.picture.mimetype;
                 }
