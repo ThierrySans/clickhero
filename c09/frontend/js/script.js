@@ -51,14 +51,14 @@
                     local = new Player({'username':currUser, 'id':"p2", 'x':760, 'y':460, 'role':"catch"});
                 } else if (pid == "p2") {
                     local = new Player({'username':currUser, 'id':"p1", 'x':10, 'y':10, 'role':"run"});
-                    other = new Player({'username':username, 'id':"p2", 'x':760, 'y':460, 'role':"catch"});
+                    other = new Player({'username':username, 'id':"p2", 'x':720, 'y':460, 'role':"catch"});
                 }
             });
             var xy = makeValidPosition();
             game.powerX = xy[0];
             game.powerY = xy[1];
-            document.getElementById('p1_status').style.backgroundImage = "url('../media/catch.png')";
-            document.getElementById('p2_status').style.backgroundImage = "url('../media/run.png')";
+            document.getElementById('p1_status').style.backgroundImage = "url('../media/run.png')";
+            document.getElementById('p2_status').style.backgroundImage = "url('../media/catch.png')";
             document.getElementById('gamemode').innerHTML = "CATCH & RUN";
             document.getElementById('countdown').innerHTML = "UNLIMITED";
             gameOne();
@@ -84,8 +84,13 @@
             document.getElementById('countdown').innerHTML = "60";
             document.getElementById('p1_status').style.backgroundImage = "none";
             document.getElementById('p2_status').style.backgroundImage = "none";
-            document.getElementById('p1_status').innerHTML = p1.point;
-            document.getElementById('p2_status').innerHTML = p2.point;
+            if (local.id == "p1") {
+                document.getElementById('p1_status').innerHTML = local.point;
+                document.getElementById('p2_status').innerHTML = other.point;
+            } else {
+                document.getElementById('p1_status').innerHTML = other.point;
+                document.getElementById('p2_status').innerHTML = local.point;
+            }
             gameTwo();
             countdown();
         } else if (game.mode == 3) {
@@ -135,8 +140,8 @@
         });
         game = dataGame;
         if (game.mode == 1) {
-            document.getElementById('p1_status').style.backgroundImage = "url('../media/catch.png')";
-            document.getElementById('p2_status').style.backgroundImage = "url('../media/run.png')";
+            document.getElementById('p1_status').style.backgroundImage = "url('../media/run.png')";
+            document.getElementById('p2_status').style.backgroundImage = "url('../media/catch.png')";
             document.getElementById('gamemode').innerHTML = "CATCH & RUN";
             document.getElementById('countdown').innerHTML = "UNLIMITED";
             gameOne();
@@ -145,8 +150,13 @@
             document.getElementById('countdown').innerHTML = "60";
             document.getElementById('p1_status').style.backgroundImage = "none";
             document.getElementById('p2_status').style.backgroundImage = "none";
-            document.getElementById('p1_status').innerHTML = p1.point;
-            document.getElementById('p2_status').innerHTML = p2.point;
+            if (local.id == "p1") {
+                document.getElementById('p1_status').innerHTML = local.point;
+                document.getElementById('p2_status').innerHTML = other.point;
+            } else {
+                document.getElementById('p1_status').innerHTML = other.point;
+                document.getElementById('p2_status').innerHTML = local.point;
+            }
             gameTwo();
             countdown();
         } else if (game.mode == 3) {
@@ -171,6 +181,30 @@
             }
         }
         game = dataGame;
+        if (game.mode == 1) {
+            if (local.id == "p1" && local.role == "catch") {
+                document.getElementById('p1_status').style.backgroundImage = "url('../media/catch.png')";
+                document.getElementById('p2_status').style.backgroundImage = "url('../media/run.png')";
+            } else if (local.id == "p2" && local.role == "catch") {
+                document.getElementById('p1_status').style.backgroundImage = "url('../media/run.png')";
+                document.getElementById('p2_status').style.backgroundImage = "url('../media/catch.png')";
+            } else if (local.id == "p1" && local.role == "run") {
+                document.getElementById('p1_status').style.backgroundImage = "url('../media/run.png')";
+                document.getElementById('p2_status').style.backgroundImage = "url('../media/catch.png')"; 
+            } else if (local.id == "p2" && local.role == "run") {
+                document.getElementById('p1_status').style.backgroundImage = "url('../media/catch.png')";
+                document.getElementById('p2_status').style.backgroundImage = "url('../media/run.png')";
+            }
+        }
+        else if (game.mode == 2) {
+            if (local.id == "p1") {
+                document.getElementById('p1_status').innerHTML = local.point;
+                document.getElementById('p2_status').innerHTML = other.point;
+            } else {
+                document.getElementById('p1_status').innerHTML = other.point;
+                document.getElementById('p2_status').innerHTML = local.point;
+            }
+        }
     };
 
     function fillColorBit(c) {
@@ -387,10 +421,24 @@
             local.role = "run";
             local.dx = defaultSp;
             local.dy = defaultSp;
+            if (local.id == "p1") {
+                document.getElementById('p1_status').style.backgroundImage = "url('../media/run.png')";
+                document.getElementById('p2_status').style.backgroundImage = "url('../media/catch.png')";
+            } else {
+                document.getElementById('p1_status').style.backgroundImage = "url('../media/catch.png')";
+                document.getElementById('p2_status').style.backgroundImage = "url('../media/run.png')";
+            }
         } else {
             local.role = "catch";
             local.dx = defaultSp;
             local.dy = defaultSp;
+            if (local.id == "p2") {
+                document.getElementById('p1_status').style.backgroundImage = "url('../media/run.png')";
+                document.getElementById('p2_status').style.backgroundImage = "url('../media/catch.png')";
+            } else {
+                document.getElementById('p1_status').style.backgroundImage = "url('../media/catch.png')";
+                document.getElementById('p2_status').style.backgroundImage = "url('../media/run.png')";
+            }
         }
 
         if (other.role == "catch") {
@@ -455,6 +503,13 @@
                 detectCollision(game.powerX + itemWidth, game.powerY + itemWidth, p.x, p.y, playerWidth, playerWidth));
         if (cover) {
             p.point += 1;
+            if (local.id == "p1") {
+                document.getElementById('p1_status').innerHTML = local.point;
+                document.getElementById('p2_status').innerHTML = other.point;
+            } else {
+                document.getElementById('p1_status').innerHTML = other.point;
+                document.getElementById('p2_status').innerHTML = local.point;
+            }
             var xy = makeValidPosition();
             game.powerX = xy[0];
             game.powerY = xy[1];
