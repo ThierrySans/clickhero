@@ -10,12 +10,26 @@ app.use(bodyParser.json());
 var multer  = require('multer');
 var upload = multer({ dest: 'uploads/' });
 
+if (app.get('env') === 'production'){ 
+    var mongoServer = 'mongo';
+}else{
+    var mongoServer = 'localhost';
+}
+
 // Database
-var mongo = require('mongodb');
+var mongo = require('mongodb').MongoClient;
 var monk = require('monk');
 var mongoose = require('mongoose');
-var db = monk('localhost:27017/usersDb');
-var users = db.get('usersDb');
+
+mongo.connect('mongodb://' + mongoServer + ':27017/test', function(err, db) {
+    if (err) return console.log(err);
+    console.log("Mongo database connected");
+    users = db.collection('test');
+});
+
+// var db = monk('localhost:27017/usersDb');
+// var users = db.get('usersDb');
+
 
 //var Datastore = require('nedb');
 //var users = new Datastore({ filename: 'db/users.db', autoload: true, timestampData: true});
