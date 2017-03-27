@@ -215,33 +215,15 @@ var options = {
     debug: true
 }
 
-var fs = require('fs');
 var PeerServer = require('peer').PeerServer;
 
 var custom_server = PeerServer({
   port: 9000,
-  ssl: {
-    key: fs.readFileSync('./server.key'),
-    cert: fs.readFileSync('./server.crt')
-  },
   path:"/peerjs"
 });
 
-custom_server.on('connection', function(id) {
-    console.log(id)
-});
+var http = require('http');
 
-custom_server.on('disconnect', function(id) {
-    console.log(id + "deconnected")
-});
-
-var https = require('https');
-var privateKey = fs.readFileSync( './server.key' );
-var certificate = fs.readFileSync( './server.crt' );
-var config = {
-    key: privateKey,
-    cert: certificate
-};
-https.createServer(config, app).listen(3000, function () {
-    console.log('HTTPS on port 3000');
+http.createServer(app).listen(3000, function () {
+    console.log('HTTP on port 3000');
 });
