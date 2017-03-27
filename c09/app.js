@@ -20,7 +20,7 @@ var mongoose = require('mongoose');
 mongo.connect('mongodb://' + mongoServer + ':27017/test', function(err, db) {
     if (err) return console.log(err);
     console.log("Mongo database connected");
-    users = db.collection('test');
+    var users = db.collection('test');
 });
 
 // var db = monk('localhost:27017/usersDb');
