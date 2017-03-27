@@ -32,7 +32,7 @@
 
     function init(username, pid, mode) {
         document.getElementById("game_map").style.display = "block";
-        document.getElementById("game").innerHTML = "";
+        document.getElementById("game").style.display = "none";
         canvas = document.getElementById("game_board");
         canvas.setAttribute('width', '800px');
         canvas.setAttribute('height', '500px');
@@ -57,8 +57,8 @@
             var xy = makeValidPosition();
             game.powerX = xy[0];
             game.powerY = xy[1];
-            document.getElementById('gamemode').innerHTML = "CATCH & RUN";
-            document.getElementById('countdown').innerHTML = "UNLIMITED";
+            //document.getElementById('gamemode').innerHTML = "CATCH & RUN";
+            //document.getElementById('countdown').innerHTML = "UNLIMITED";
             gameOne();
         } else if (game.mode == 2) {
             model.getActiveUsername(function (err, currUser) {
@@ -78,8 +78,8 @@
             local.dy = 2*defaultSp;
             other.dx = 2*defaultSp;
             other.dx = 2*defaultSp;
-            document.getElementById('gamemode').innerHTML = "COLLECT POINTS";
-            document.getElementById('countdown').innerHTML = "60";
+            //document.getElementById('gamemode').innerHTML = "COLLECT POINTS";
+            //document.getElementById('countdown').innerHTML = "60";
             gameTwo();
             countdown();
         } else if (game.mode == 3) {
@@ -98,8 +98,8 @@
             local.dy = 2*defaultSp;
             other.dx = 2*defaultSp;
             other.dx = 2*defaultSp;
-            document.getElementById('gamemode').innerHTML = "DODGE BALL";
-            document.getElementById('countdown').innerHTML = "60";
+            //document.getElementById('gamemode').innerHTML = "DODGE BALL";
+            //document.getElementById('countdown').innerHTML = "60";
             gameThree();
             createMonster();
             moveMonsters();
@@ -114,7 +114,7 @@
     function initSync(dataP1,dataP2,dataGame) {
         console.log(dataP1, dataP2);
         document.getElementById("game_map").style.display = "block";
-        document.getElementById("game").innerHTML = "";
+        document.getElementById("game").style.display = "none";
         canvas=document.getElementById("game_board");
         canvas.setAttribute('width', '800px');
         canvas.setAttribute('height', '500px');
@@ -573,38 +573,46 @@
     //--------------------------------------------------
 
     function keyUpHandler(e){
-        e.preventDefault();
-        if (e.keyCode == 38){
-            pUp = false;
-        }
-        else if (e.keyCode == 40){
-            pDown = false;
-        }
-        else if (e.keyCode == 37){
-            pLeft = false;
-        }
-        else if (e.keyCode == 39){
-            pRight = false;
+        if (document.getElementById("game_map").style.display == "block") {
+            e.preventDefault();
+            if (e.keyCode == 38){
+                pUp = false;
+            }
+            else if (e.keyCode == 40){
+                pDown = false;
+            }
+            else if (e.keyCode == 37){
+                pLeft = false;
+            }
+            else if (e.keyCode == 39){
+                pRight = false;
+            }
+        } else {
+            return true;
         }
     }
 
     function keyDownHandler(e){
-        e.preventDefault();
-        /* Up arrow was pressed */
-        if (e.keyCode == 38){
-            pUp = true;
-        }
-        /* Down arrow was pressed */
-        else if (e.keyCode == 40){
-            pDown = true;
-        }
-        /* Left arrow was pressed */
-        else if (e.keyCode == 37){
-            pLeft = true;
-        }
-        /* Right arrow was pressed */
-        else if (e.keyCode == 39){
-            pRight = true;
+        if (document.getElementById("game_map").style.display == "block") {
+            e.preventDefault();
+            /* Up arrow was pressed */
+            if (e.keyCode == 38){
+                pUp = true;
+            }
+            /* Down arrow was pressed */
+            else if (e.keyCode == 40){
+                pDown = true;
+            }
+            /* Left arrow was pressed */
+            else if (e.keyCode == 37){
+                pLeft = true;
+            }
+            /* Right arrow was pressed */
+            else if (e.keyCode == 39){
+                pRight = true;
+            }
+        } else {
+            return true;
         }
     }
 

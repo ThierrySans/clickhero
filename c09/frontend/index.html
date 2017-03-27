@@ -11,16 +11,60 @@
 
     <ul id="toolbar">
         <li><a href="/">Home</a></li>
-        <li class="dropdown">
-          <a class="dropbtn">Friend</a>
-          <div class="dropdown-content">
+        <li><a href="/profile.html">Profile</a></li>
+        <li><a href="/credits.html">Credits</a></li>
+        <li id="signout_button" class="header_button"><a href="/signout/">Sign Out</a></li>
+        <li id="username"></li>
+    </ul>
+
+    <div id="main">    
+        <div class="container">
+            <div class="alert alert-danger" id="error" style="display:none">
+            </div>
+        </div>
+        <!--<div class="onOffLine">
+            <button id="online_game" class="game_button">Start Game</button>
+            <button id="offline_game" class="game_button">Offline</button>
+        </div>-->
+        
+        <div id="game_map">
+            <div class="back_button" id="back"></div>
+            <canvas id="game_board" width="800" height="500" style="border:5px solid #000000">
+                    Sorry, your browser does not support HTML5 Canvas.
+            </canvas>
+        </div>
+
+    <div id="game">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="left_button" id="left"></div>
+        </div>
+        <div class="col-sm-6">
+            <div class="mode_name" id="mode_name">Mode 1</div>
+            <div class="start_button" id="1"></div>
+        </div>
+        <div class="col-sm-3">
+            <div class="right_button" id="right"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-5">
+          <div class="friend_box">
             <form id="submit_search">
                 <input type="text" id="search" placeholder="Search for friends..">
-                <p class="form_radio">
-                    <label><input type="radio" name="search" value="my_friends" id="search_my_friends" />My Friends</label>
-                    <label><input type="radio" name="search" value="all_players" id="search_all_players" />All Players<input type="submit"></label>
-                </p>
+                <!--<p class="form_radio">-->
+                    <!--<label><input type="radio" name="search" value="my_friends" id="search_my_friends" />My Friends</label>-->
+                    <!--<label><input type="radio" name="search" value="all_players" id="search_all_players" />All Players<input type="submit"></label>-->
+                <!--</p>-->
             </form>
+            <div>
+                <select class="row" size="2" id="select_search">
+                    <option class="col-sm-6" id="search_my_friends">My Friends</option>
+                    <option class="col-sm-6" id="search_all_players">All Players</option>
+                </select>
+            </div>
             <div id="friends">
                 <!--<div class="players">-->
                     <!--<div class="user_pic"></div>-->
@@ -41,39 +85,17 @@
                     <!--<div class="visit_button"></div>-->
                 <!--</div>-->
             </div>
-          </div>
-        </li>
-        <li><a href="/achievement.html">Achievement</a></li>
-        <li><a href="/profile.html">Profile</a></li>
-        <li id="signout_button" class="header_button"><a href="/signout/">Sign Out</a></li>
-        <li id="username"></li>
-    </ul>
-    <div id="main"> 
-        <div class="container">
-            <div class="alert alert-danger" id="error" style="display:none">
-            </div>
+          </div> 
         </div>
-        <!--<div class="onOffLine">
-            <button id="online_game" class="game_button">Start Game</button>
-            <button id="offline_game" class="game_button">Offline</button>
-        </div>-->
-        
-        <div id="game_map">
-            <div class="back_button" id="back"></div>
-            <canvas id="game_board" width="800" height="500" style="border:5px solid #000000">
-                    Sorry, your browser does not support HTML5 Canvas.
-            </canvas>
-        </div>
-        <div id="game">
-        </div>
-        <div class="container" id="messages">
+        <div class="col-sm-7" id="messages">
             <div class="alert alert-success">
                   <strong>Hello!</strong> Choose a friend and click button to start the game!
             </div>
         </div>
-        <footer>
-            <a href='/credits.html'>credits</a>
-        </footer>
+      </div>
+    </div>
+    </div>
+
     </div>  
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

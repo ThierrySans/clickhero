@@ -26,128 +26,47 @@
                         </object>
                         <div class="player_info">
                             <div class="player_name">${friend.username}</div>
-                            <div class="player_status">Online</div>
+                            <div class="player_status">${friend.status}</div>
                         </div>`;
                     if (search === "") {
-                        var chatButton = document.createElement("div");
-                        chatButton.className = "chat_button";
-                        chatButton.onclick = function(e) {
-                            model.sendChat(e.target.parentNode.id, function(err) {
-                                if (err) return showError(err);
-                                showChatBox();
-                            });
-                        };
-                        e.appendChild(chatButton);
                         var deleteButton = document.createElement("div");
                         deleteButton.className = "delete_button";
                         deleteButton.onclick = function(e) {
                             model.deleteFriend(e.target.parentNode.id, function(err) {
                                 if (err) return showError(err);
                                 updatePage();
-                                updateFriend();
                             });
                         };
                         e.appendChild(deleteButton);
                     } else {
-                        var visitButton = document.createElement("div");
-                        visitButton.className = "visit_button";
-                        visitButton.onclick = function(e) {
-                            model.visitPlayer(e.target.parentNode.id, function(err) {
-                                if (err) return showError(err);
-                                showAchievement();
-                            });
-                        };
-                        e.appendChild(visitButton);
                         var addButton = document.createElement("div");
                         addButton.className = "add_button";
                         addButton.onclick = function(e) {
                             model.addFriend(e.target.parentNode.id, function(err) {
                                 if (err) return showError(err);
                                 updatePage();
-                                updateFriend();
                             });
                         };
                         e.appendChild(addButton);
+                        var cancelButton = document.createElement("button");
+                        cancelButton.value = "cancel";
+                        cancelButton.innerHTML = "cancel";
+                        cancelButton.type = "button";
+                        cancelButton.className = "cancel_button";
+                        cancelButton.onclick = function(e) {
+                            updatePage();
+                        };
+                        container.appendChild(cancelButton);
                     }
+                    e.onclick = function(u) {
+                        if (document.getElementsByClassName("selected_players").length != 0) {
+                             document.getElementsByClassName("selected_players")[0].className = "players";                   
+                        }
+                        e.className = "selected_players";
+                    };
                     container.appendChild(e);
                 });
             });
-        });
-    };
-    
-    var updateFriend = function () {
-        var container = document.getElementById("game");
-        var btn_container = document.getElementById("btn_container");
-        container.innerHTML = "";
-        var search = "";
-        model.getFriends(search, function(err, friends) {
-            if (err) return showError(err);
-            var e = document.createElement("select");
-            var p = document.createElement("p");
-            p.innerHTML = "Invite your friend: ";
-            friends.forEach(function (friend) {
-                var u = document.createElement("option");
-                u.value = friend.username;
-                u.innerHTML = friend.username;
-                e.appendChild(u);
-            });
-            var start_one = document.createElement("div");
-            var start_two = document.createElement("div");
-            var start_three = document.createElement("div");
-            start_one.className = "start_button_one";
-            start_one.innerHTML = `Mode one`
-            start_two.className = "start_button_two";
-            start_three.className = "start_button_three";
-            start_one.onclick = function(v) {
-                var friendname = e.options[e.selectedIndex].text;
-                model.getFriends(friendname, function(err, friends) {
-                    if (err) return showError(err);
-                    var data = {}
-                    data.friendId = friends[0].peerId;
-                    data.friendname = friends[0].username;
-                    data.mode = 1;
-                    model.getActiveUsername(function(err, user) {
-                        data.myname = user;
-                    })
-                    document.dispatchEvent(new CustomEvent('onInvite', {detail: data}));
-                    
-                });
-            };
-            start_two.onclick = function(v) {
-                var friendname = e.options[e.selectedIndex].text;
-                model.getFriends(friendname, function(err, friends) {
-                    if (err) return showError(err);
-                    var data = {}
-                    data.friendId = friends[0].peerId;
-                    data.mode = 2;
-                    data.friendname = friends[0].username;
-                    model.getActiveUsername(function(err, user) {
-                        data.myname = user;
-                    })
-                    document.dispatchEvent(new CustomEvent('onInvite', {detail: data}));
-                    
-                });
-            };
-            start_three.onclick = function(v) {
-                var friendname = e.options[e.selectedIndex].text;
-                model.getFriends(friendname, function(err, friends) {
-                    if (err) return showError(err);
-                    var data = {}
-                    data.friendId = friends[0].peerId;
-                    data.mode = 3;
-                    data.friendname = friends[0].username;
-                    model.getActiveUsername(function(err, user) {
-                        data.myname = user;
-                    })
-                    document.dispatchEvent(new CustomEvent('onInvite', {detail: data}));
-                    
-                });
-            };
-            btn_container.appendChild(start_one);
-            btn_container.appendChild(start_two);
-            btn_container.appendChild(start_three);
-            container.appendChild(p);
-            container.appendChild(e);
         });
     };
     
@@ -160,11 +79,11 @@
     
     window.onload = function scheduler(e){
         updatePage();
-        updateFriend();
     };  
     
     document.getElementById("search").onkeyup = function(e) {
-        if (document.getElementById("search_my_friends").checked) {
+        if (document.getElementById("search_my_friends").selected) {
+            console.log("hey");
             var input, filter, players, i, info, name;
             input = document.getElementById('search');
             filter = input.value.toUpperCase();
@@ -183,7 +102,7 @@
     };
     
     document.getElementById("submit_search").onsubmit = function(e) {
-        if (document.getElementById("search_all_players").checked) {
+        if (document.getElementById("search_all_players").selected) {
             e.preventDefault();
             var input = document.getElementById("search").value;
             if (input.length > 0) {
@@ -192,6 +111,52 @@
             }
         }
     };
+    
+    document.getElementById("left").onclick = function(e) {
+        if (document.getElementById("mode_name").innerHTML == "Mode 1") {
+            document.getElementById("mode_name").innerHTML = "Mode 3";
+            document.getElementById("1").id = "3";
+        } else if (document.getElementById("mode_name").innerHTML == "Mode 2") {
+            document.getElementById("mode_name").innerHTML = "Mode 1";
+            document.getElementById("2").id = "1";
+        } else {
+            document.getElementById("mode_name").innerHTML = "Mode 2";
+            document.getElementById("3").id = "2";
+        }
+    };
+    
+    document.getElementById("right").onclick = function(e) {
+        if (document.getElementById("mode_name").innerHTML == "Mode 1") {
+            document.getElementById("mode_name").innerHTML = "Mode 2";
+            document.getElementById("1").id = "2";
+        } else if (document.getElementById("mode_name").innerHTML == "Mode 2") {
+            document.getElementById("mode_name").innerHTML = "Mode 3";
+            document.getElementById("2").id = "3";
+        } else {
+            document.getElementById("mode_name").innerHTML = "Mode 1";
+            document.getElementById("3").id = "1";
+        }
+    };
+    
+    document.getElementsByClassName("start_button")[0].onclick = function(e) {
+        if (document.getElementsByClassName("selected_players").length == 0) {
+            return showError("You haven't select any friends!");
+        } else {
+            var data = {};
+            var username = document.getElementsByClassName("selected_players")[0].getElementsByClassName("player_info")[0].getElementsByClassName("player_name")[0].innerHTML;
+            model.getFriends(username, function(err, user) {
+                model.getActiveUsername(function(err, username) {
+                    if (err) return showError(err);
+                    data.myname = username;
+                });
+                data.friendname = user[0].username;
+                data.friendId = user[0].peerId;
+                data.mode = document.getElementsByClassName("start_button")[0].id;
+                console.log(data);
+                document.dispatchEvent(new CustomEvent('onInvite', {detail: data}));
+            });
+        }
+    }
     
     
     /*document.getElementById("online_game").onclick = function(e) {
@@ -263,7 +228,8 @@
         /*document.getElementById("online_game").style.display = "block";
         document.getElementById("offline_game").style.display = "block";*/
         document.getElementById("game_map").style.display = "none";
-        updateFriend();    
+        document.getElementById("game").style.display = "block";
+        updatePage();    
     };
     
 }(model));

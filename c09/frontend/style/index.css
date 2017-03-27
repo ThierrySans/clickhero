@@ -23,36 +23,56 @@ li a:hover {
     background-color: #111;
 }
 
-li.dropdown {
-    display: inline-block;
-}
-
-.dropdown-content {
-    display: none;
+.friend_box {
     position: absolute;
     background-color: #f9f9f9;
-    min-width: 500px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
+    max-height: 800px;
+    border-radius: 10px;
+    width: 90%;
 }
 
-.dropdown:hover .dropdown-content {
-    display: block;
-}
-
-.dropdown-content div:hover {
-    background-color: #f1f1f1;
+.cancel_button {
+    width: 100%;
 }
 
 #search {
     background-image: url('/media/search.png');
     background-position: 10px 12px;
     background-repeat: no-repeat;
-    width: 500px;
     font-size: 16px;
     padding: 12px 20px 12px 40px;
     border: 1px solid #ddd;
-    margin-bottom: 12px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    width: 100%;
+}
+
+#select_search {
+    width: 100%;
+    margin-left: auto;
+    height: 20px;
+}
+
+#search_my_friends {
+    text-align: center;
+    width: 50%;
+    font-size: 16px;
+}
+
+#search_all_players {
+    text-align: center;
+    width: 50%;
+    font-size: 16px;
+}
+
+#friends {
+    max-height: 700px;
+    overflow: scroll;
+}
+
+#messages {
+    max-height: 800px;
+    overflow: scroll;  
 }
 
 .complex_form{
@@ -130,12 +150,14 @@ li.dropdown {
     height:50px;
     margin-top:20px;
     flex-wrap: wrap;
+    cursor: pointer;
 }
 
 .players .user_pic {
     width:32px;
     height:32px;
     object-fit:contain;
+    margin-left:10px;
 }
 
 .players .user_pic img {
@@ -147,7 +169,7 @@ li.dropdown {
     flex-direction: column;
     justify-content: center;
     align-items:left;
-    width: 400px;
+    width: 70%;
     margin-left: 10px;
 }
 
@@ -168,25 +190,66 @@ li.dropdown {
     text-align:center;
 }
 
-.players .chat_button {
-    height: 32px;
-    width: 32px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url(../media/chat.png);
-    text-align:center;
-}
-
-.players .visit_button {
-    height: 32px;
-    width: 32px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url(../media/visit.png);
-    text-align:center;
-}
-
 .players .add_button {
+    height: 32px;
+    width: 32px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(../media/add.png);
+    text-align:center;
+}
+
+.selected_players {
+    display:flex;
+    flex-flow:flex-start;
+    align-items:center;
+    width:100%;
+    margin:auto;
+    height:50px;
+    margin-top:20px;
+    flex-wrap: wrap;
+    background-color: orange;
+    cursor: pointer;
+}
+
+.selected_players .user_pic {
+    width:32px;
+    height:32px;
+    object-fit:contain;
+    margin-left:10px;
+}
+
+.selected_players .user_pic img {
+    max-width:100%;
+}
+
+.selected_players .player_info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:left;
+    width: 70%;
+    margin-left: 10px;
+}
+
+.selected_players .player_name {
+
+}
+
+.selected_players .player_status {
+    padding-top: 5px;
+}
+
+.selected_players .delete_button {
+    height: 32px;
+    width: 32px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(../media/trash.png);
+    text-align:center;
+}
+
+.selected_players .add_button {
     height: 32px;
     width: 32px;
     background-repeat: no-repeat;
@@ -207,12 +270,46 @@ li.dropdown {
 }
 
 .start_button {
-    height: 256px;
-    width: 256px;
+    height: 200px;
+    width: 300px;
     background-size: 50%;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url(../media/start.png);
+    background-image: url(../media/red.png);
+    text-align: center;
+    align-items: center;
+    margin: auto;
+    cursor: pointer;
+}
+
+.mode_name {
+    text-align: center;
+    align-items: center;
+    margin-top: 10px;;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.left_button {
+    height: 200px;
+    width: 200px;
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(../media/left.png);
+    text-align: center;
+    align-items: center;
+    margin: auto;
+    cursor: pointer;
+}
+
+.right_button {
+    height: 200px;
+    width: 200px;
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(../media/right.png);
     text-align: center;
     align-items: center;
     margin: auto;
@@ -220,61 +317,44 @@ li.dropdown {
 }
 
 .start_button:active {
-    height: 256px;
-    width: 256px;
+    height: 200px;
+    width: 300px;
     background-size: 50%;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url(../media/start.png);
     text-align: center;
     align-items: center;
     margin: auto;
     transform: scale(0.9);
 }
 
-.onOffLine {
-    display: flex;
-    flex-direction: column;
+#1 {
+    background-image: url(../media/red.png);
 }
 
-.onOffLine .game_button{
-    padding: 10px 16px;
-    border-radius: 7px 7px 7px 7px;
-    background-color: black;
-    color: white;
-    font-size: 16px;
-    align-items: center;
-    width: 75%;
-    margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
+#1:active {
+    background-image: url(../media/red.png);
+}
+
+#2 {
+    background-image: url(../media/yellow.png);
+}
+
+#2:active {
+    background-image: url(../media/yellow.png);
+}
+
+#3 {
+    background-image: url(../media/blue.png);
+}
+
+#3:active {
+    background-image: url(../media/blue.png);
 }
 
 #game_map {
     display: none;
     margin-top: 20px;
-}
-
-#game {
-    display: flex;
-    flex-direction: column;
-}
-
-#game p {
-    margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    align-items: center;
-    font-size: 16px;
-}
-
-#game select {
-    margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    width: 75%;
-    align-items: center;
-    font-size: 20px;
 }
 
 #game_board {

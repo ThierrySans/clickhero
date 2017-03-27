@@ -77,6 +77,7 @@ var peer = new Peer({
     document.addEventListener("onInvite", function(e) {
         var requestedPeer = e.detail.friendId;
         var data = e.detail;
+	console.log(data);
         data.inviterId = currID;
         data.label = "invite";
         var c = peer.connect(requestedPeer, {
