@@ -17,7 +17,7 @@ var model = (function(){
         xhttp.open(method, url, true);
         if (json && body){
             xhttp.setRequestHeader('Content-Type', 'application/json');
-            xhttp.send(JSON.stringify(body));  
+            xhttp.send(JSON.stringify(JSON.decycle(body)));  
         }else{
             xhttp.send(body);  
         }        
