@@ -153,6 +153,7 @@ app.get('/api/friends/', function (req, res, next) {
     var selectedIds = req.session.user.friends;
     var ids = selectedIds.map(function(e){return {_id: e};});
     users.find({ $or: ids}, function(err, selectedFriends) {
+        console.log(selectedFriends);
         selectedFriends.forEach(function(e) {
             if (e.picture) {
                 e.mimetype = e.picture.mimetype;
@@ -168,6 +169,7 @@ app.get('/api/users/:username/', function(req, res, next) {
     if (!req.session.user) return res.status(403).end("Forbidden");
     users.findOne({username: req.params.username}, function(err, e) {
         if (err) return res.status(404).end("Player username:" + req.params.username + " does not exists");
+        console.log(e);
         //var user = users.find(function(u) {return u.username === e.username;});
         if (e.picture) {
             e.mimetype = e.picture.mimetype;
