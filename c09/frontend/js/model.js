@@ -54,7 +54,7 @@ var model = (function(){
     // Read
     model.getFriends = function(searchname, callback) {
         if (searchname === "") {
-            doAjax("GET", "/api/friends/", null, false, callback);
+            doAjax("GET", "/api/friends/", null, true, callback);
         } else {
             doAjax("GET", "/api/users/" + searchname + "/", null, true, callback);
         }
