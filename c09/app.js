@@ -58,8 +58,7 @@ var session = require('express-session');
 app.use(session({
     secret: 'keyboard cat',
     resave: false,
-    saveUninitialized: true,
-    cookie: {secure: true, sameSite: true}
+    saveUninitialized: true
 }));
 
 app.use(function (req, res, next){
