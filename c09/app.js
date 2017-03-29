@@ -149,20 +149,21 @@ app.get('/api/users/:username/picture/', function (req, res, next) {
 });
 
 app.get('/api/friends/', function (req, res, next) {
-    console.log(users.getAllData());
     if (!req.session.user) return res.status(403).end("Forbidden");
-    var selectedIds = req.session.user.friends;
-    var ids = selectedIds.map(function(e){return {_id: e};});
-    users.find({ $or: ids}, function(err, selectedFriends) {
-        console.log(selectedFriends);
-        selectedFriends.forEach(function(e) {
-            if (e.picture) {
-                e.mimetype = e.picture.mimetype;
-            }
-            e.picture = "/api/users/" + e.username + "/picture/";
-            return e;
-        });
-        return res.json(selectedFriends);
+    console.log(getAllData());
+    users.findOne({username: req.session.user.username}, function (err, user) {
+        var selectedIds = user.friends;
+        var ids = selectedIds.map(function(e){return {_id: e};});
+        users.find({ $or: ids}, function(err, selectedFriends) {
+            selectedFriends.forEach(function(e) {
+                if (e.picture) {
+                    e.mimetype = e.picture.mimetype;
+                }
+                e.picture = "/api/users/" + e.username + "/picture/";
+                return e;
+            });
+            return res.json(selectedFriends);
+        });   
     });
 });
 
