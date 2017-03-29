@@ -1,12 +1,16 @@
-###Project Title
+### Project Title
 - NowYouCatchMe!
 
-###Team Members
+### Team Members
 - chuyut7 (Yutong Chen)
 - lizeyu2 (Zeyu Li)
 - hejiache (Jiachen He)
 
-###Description of web application
+### URLs
+- app url: http://clickhero.cms-weblab.utsc.utoronto.ca/
+- video url: https://www.youtube.com/watch?v=5yCWK74iUds
+
+### Description of web application
 
 Design a game is challenging and interesting.
 Designing a game that is sustainable and playable is even more challenging.
@@ -19,7 +23,7 @@ There are power ups in the arena, you can take them based on your luck, but also
 Eat power to swich the role around and to increase your speed.
 Now You Catch Me!
 
-###Description of the key features that will be completed by the Beta version
+### Description of the key features that will be completed by the Beta version
 - User can sign up as a player
 - A player can sign in to play
 - A player can sign out
@@ -37,18 +41,20 @@ Now You Catch Me!
 - When a catcher catches the runner, it wins
 - A player can press the back button and start a new game
 
-###Description of additional features that will be complete by the Final version
+### Description of additional features that will be complete by the Final version
 - A player can invite friend by sending a request to another player
 - Notification of all the requests
 - Can see if a friend is online or not
 - Add more power ups to increase the game flexibility and playability
 
-###Description of the technology that you will use
+### Description of the technology that you will use
 - Bootstrap (frontend)
 - Canvas (frontend)
 - Node.js (backend)
 - Peerjs (backend)
 
-###Description of the technical challenges
+### Description of the technical challenges
 - Use canvas to generate maps
 - Use Peerjs to connect two browsers and communicate in real time
+- Use Bootstrap to let the app be responsive
+- Used mongodb (it is not working when we deployed it, so we removed then)
