@@ -47,13 +47,11 @@ Now You Catch Me!
 - Player can log in by connecting to facebook account
 
 ###Description of the technology that you will use
-- Angular JS (frontend)
+- Bootstrap (frontend)
 - Canvas (frontend)
-- Node.js (backend) tim
+- Node.js (backend)
 - Peerjs (backend)
-- MongoDB (database)
 
 ###Description of the technical challenges
 - Use canvas to generate maps
 - Use Peerjs to connect two browsers and communicate in real time
-- Use MongoDB to manage the user information
