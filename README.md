@@ -38,13 +38,10 @@ Now You Catch Me!
 - A player can press the back button and start a new game
 
 ###Description of additional features that will be complete by the Final version
-- A player can add friend by sending a request to another player
 - A player can invite friend by sending a request to another player
-- Achievement system
 - Notification of all the requests
 - Can see if a friend is online or not
 - Add more power ups to increase the game flexibility and playability
-- Player can log in by connecting to facebook account
 
 ###Description of the technology that you will use
 - Bootstrap (frontend)
