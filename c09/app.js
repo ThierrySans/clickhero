@@ -150,7 +150,6 @@ app.get('/api/users/:username/picture/', function (req, res, next) {
 
 app.get('/api/friends/', function (req, res, next) {
     if (!req.session.user) return res.status(403).end("Forbidden");
-    console.log(getAllData());
     users.findOne({username: req.session.user.username}, function (err, user) {
         var selectedIds = user.friends;
         var ids = selectedIds.map(function(e){return {_id: e};});
