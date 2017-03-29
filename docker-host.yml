@@ -1,4 +1,2 @@
 mount: /home/nodejs/uploads
 domain: clickhero.cms-weblab.utsc.utoronto.ca
-options:
-    mongo:
