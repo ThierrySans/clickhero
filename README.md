@@ -46,6 +46,7 @@ Now You Catch Me!
 - Notification of all the requests
 - Can see if a friend is online or not
 - Add more power ups to increase the game flexibility and playability
+- A player can choose different mode to play (currently three modes)
 
 ### Description of the technology that you will use
 - Bootstrap (frontend)
