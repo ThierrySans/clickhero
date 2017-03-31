@@ -9,6 +9,7 @@
 ### URLs
 - app url: http://clickhero.cms-weblab.utsc.utoronto.ca/
 - video url: https://www.youtube.com/watch?v=5yCWK74iUds
+- doc url: https://github.com/UTSCC09/clickhero/blob/master/api.md
 
 ### Description of web application
 
