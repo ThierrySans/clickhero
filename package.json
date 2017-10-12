@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,5 +16,13 @@
     "nedb": "^1.8.0",
     "peer": "^0.2.8"
   },
-  "description": ""
+  "description": "",
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ],
+  "engines": {
+    "node": "5.9.1"
+  }
 }
