@@ -376,7 +376,8 @@ li a:hover {
 
 .container{
     max-width: 900px;
-    padding-top:8px;
+    padding-top:8px;    
+    margin: auto;
 }
 
 #decline_btn{
